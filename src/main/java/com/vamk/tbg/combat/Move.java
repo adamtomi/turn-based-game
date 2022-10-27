@@ -1,8 +1,8 @@
 package com.vamk.tbg.combat;
 
-import com.vamk.tbg.Entity;
+import com.vamk.tbg.game.Entity;
 
 public interface Move {
 
-    void perform(Entity target);
+    void perform(Entity source, Entity target);
 }

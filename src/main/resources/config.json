@@ -1,0 +1,12 @@
+{
+  "effects": {
+    "bleeding": {
+      "multiplier": 0.05,
+      "randomize": true
+    },
+    "regenration": {
+      "multiplier": 0.01,
+      "randomize": true
+    }
+  }
+}
