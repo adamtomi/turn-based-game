@@ -11,9 +11,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class Game implements AutoCloseable {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
@@ -123,11 +121,9 @@ public class Game implements AutoCloseable {
     }
 
     private int cleanupEntities() {
-        Set<Entity> dead = this.entities.stream()
-                .filter(Entity::isDead)
-                .collect(Collectors.toSet());
-        dead.forEach(this.entities::remove);
-        return dead.size();
+        int initialSize = this.entities.size();
+        this.entities.removeIf(Entity::isDead);
+        return initialSize - this.entities.size();
     }
 
     private void printEntities() {
