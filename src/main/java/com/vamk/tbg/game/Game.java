@@ -77,7 +77,7 @@ public class Game implements AutoCloseable {
 
     private boolean shouldContinue() {
         int friends = (int) this.entities.stream().filter(entity -> !entity.isHostile()).count();
-        int hostiles = Math.max(0, this.entities.size() - friends);
+        int hostiles = this.entities.size() - friends;
         return friends > 0 && hostiles > 0;
     }
 
