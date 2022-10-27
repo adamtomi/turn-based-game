@@ -56,10 +56,7 @@ public class Game implements AutoCloseable {
     private void gameLoop() {
         while (shouldContinue()) {
             LOGGER.info("----------- | Entering game cycle | -----------");
-            for (Entity entity : this.entities) {
-                maybePromptAndPlay(entity);
-            }
-
+            this.entities.forEach(this::maybePromptAndPlay);
             this.effectHandlers.forEach(StatusEffectHandler::tick);
 
             /*
@@ -95,13 +92,14 @@ public class Game implements AutoCloseable {
 
     private void play(Entity entity, int move) {
         LOGGER.info("Entity %d makes this move: %d".formatted(entity.getId(), move));
+        // FROZEN rids the entitiy from this round
         if (entity.hasEffect(StatusEffect.FROZEN)) return;
 
         // TODO Should change how entities are selected...
         if (move == 1) entity.getFriendlyMove().perform(entity, this.entities.get(entity.isHostile() ? 1 : 0));
         else entity.getHostileMove().perform(entity, this.entities.get(entity.isHostile() ? 0 : 1));
 
-        // Caffeinated grants another turn
+        // CAFFEINATED grants another turn
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) maybePromptAndPlay(entity);
     }
 
