@@ -82,9 +82,8 @@ public class Game implements AutoCloseable {
     }
 
     private void maybePromptAndPlay(Entity entity) {
-        int move;
+        int move = -1;
         if (!entity.isHostile()) {
-            move = promptUser();
             while (move == -1) move = promptUser();
         } else {
             move = this.random.nextInt(2) + 1; // Add 1 so that we never hit 0
