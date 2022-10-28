@@ -62,7 +62,7 @@ public class Game implements AutoCloseable {
                 maybePromptAndPlay(entity);
 
                 if (entity.isDead()) {
-                    LOGGER.info("Entity %d died, removeing it from the board...".formatted(entity.getId()));
+                    LOGGER.info("Entity %d died, removing it from the board...".formatted(entity.getId()));
                     iter.remove();
                 }
             }
