@@ -8,6 +8,7 @@ import com.vamk.tbg.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -54,7 +55,18 @@ public class Game implements AutoCloseable {
     private void gameLoop() {
         while (shouldContinue()) {
             LOGGER.info("----------- | Entering game cycle | -----------");
-            this.entities.forEach(this::maybePromptAndPlay);
+            // Use iterator instead of regular for loop, because it can remove
+            // items from the list while iterating through it.
+            for (Iterator<Entity> iter = this.entities.iterator(); iter.hasNext();) {
+                Entity entity = iter.next();
+                maybePromptAndPlay(entity);
+
+                if (entity.isDead()) {
+                    LOGGER.info("Entity %d died, removeing it from the board...".formatted(entity.getId()));
+                    iter.remove();
+                }
+            }
+
             this.effectHandlers.forEach(StatusEffectHandler::tick);
 
             /*
