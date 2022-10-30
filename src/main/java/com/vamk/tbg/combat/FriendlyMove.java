@@ -12,7 +12,7 @@ public class FriendlyMove implements Move {
     @Override
     public void perform(Entity source, Entity target) {
         StatusEffect effect = ((int) (Math.random() * 100)) % 2 == 0 ? StatusEffect.REGENERATION : StatusEffect.LIFESTEAL;
-        target.applyEffect(effect);
-        LOGGER.info("Applying effect %s to entity: %d".formatted(effect, target.getId()));
+        source.applyEffect(effect);
+        LOGGER.info("Applying effect %s to entity: %d".formatted(effect, source.getId()));
     }
 }

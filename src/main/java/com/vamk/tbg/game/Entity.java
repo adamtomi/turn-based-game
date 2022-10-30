@@ -4,6 +4,8 @@ import com.vamk.tbg.Constants;
 import com.vamk.tbg.combat.FriendlyMove;
 import com.vamk.tbg.combat.HostileMove;
 import com.vamk.tbg.combat.Move;
+import com.vamk.tbg.effect.BleedingEffectHandler;
+import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.util.Tickable;
 
@@ -14,6 +16,10 @@ import java.util.Set;
 
 public class Entity implements Tickable {
     private final Map<StatusEffect, Integer> activeEffects = new HashMap<>();
+    private final Set<Tickable> tickables = Set.of(
+            new BleedingEffectHandler(this),
+            new RegenEffectHandler(this)
+    );
     private final Move friendlyMove = new FriendlyMove();
     private final Move hostileMove = new HostileMove();
     private final int id;
@@ -82,6 +88,7 @@ public class Entity implements Tickable {
 
     @Override
     public void tick() {
+        this.tickables.forEach(Tickable::tick);
         Set<StatusEffect> expired = new HashSet<>();
         for (Map.Entry<StatusEffect, Integer> entry : this.activeEffects.entrySet()) {
             int rounds = entry.getValue() - 1;
@@ -96,5 +103,20 @@ public class Entity implements Tickable {
     @Override
     public String toString() {
         return "Entity{ id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj instanceof Entity that) {
+            return this.id == that.id;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * this.id;
     }
 }

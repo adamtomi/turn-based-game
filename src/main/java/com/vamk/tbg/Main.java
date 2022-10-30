@@ -9,8 +9,7 @@ public class Main {
     private static final Logger LOGGER = LogUtil.getLogger(Main.class);
 
     public static void main(String[] args) {
-        try {
-            Game game = new Game();
+        try (Game game = new Game()) {
             game.launch();
         } catch (Throwable ex) {
             LOGGER.severe("Caught an exception while the game was running. Exiting...");
