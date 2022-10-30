@@ -38,11 +38,11 @@ public enum StatusEffect {
     ;
 
     private final int rounds;
-    private final boolean positive;
+    private final boolean harmful;
 
-    StatusEffect(int rounds, boolean positive) {
+    StatusEffect(int rounds, boolean harmful) {
         this.rounds = rounds;
-        this.positive = positive;
+        this.harmful = harmful;
     }
 
     /**
@@ -53,5 +53,15 @@ public enum StatusEffect {
      */
     public int getRounds() {
         return this.rounds;
+    }
+
+    /**
+     * Determines whether this effect is
+     * harmful to the entity it's applied to.
+     *
+     * @return boolean
+     */
+    public boolean isHarmful() {
+        return this.harmful;
     }
 }

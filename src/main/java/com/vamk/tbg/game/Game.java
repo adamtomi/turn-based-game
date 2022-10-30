@@ -1,7 +1,7 @@
 package com.vamk.tbg.game;
 
 import com.vamk.tbg.effect.StatusEffect;
-import com.vamk.tbg.util.CollectionUtil;
+import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class Game implements AutoCloseable {
         this.entities.addAll(this.friends);
         this.entities.addAll(this.hostiles);
 
-        CollectionUtil.randomize(this.entities);
+        RandomUtil.randomize(this.entities);
         LOGGER.info("Done!");
     }
 
@@ -90,7 +90,7 @@ public class Game implements AutoCloseable {
             target = readEntity();
         } else {
             move = this.random.nextInt(2) + 1; // Add 1 so that we never hit 0
-            target = CollectionUtil.pickRandom(this.friends);
+            target = RandomUtil.pickRandom(this.friends);
         }
 
         entity.tick();

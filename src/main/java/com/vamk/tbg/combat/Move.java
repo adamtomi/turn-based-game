@@ -1,8 +1,12 @@
 package com.vamk.tbg.combat;
 
-import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.MoveContext;
 
 public interface Move {
 
-    void perform(Entity source, Entity target);
+    String getId();
+
+    boolean isAttack();
+
+    void perform(MoveContext context);
 }

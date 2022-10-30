@@ -12,6 +12,11 @@ public class HostileMove implements Move {
     private final Random random = new Random();
 
     @Override
+    public boolean isAttack() {
+        return true;
+    }
+
+    @Override
     public void perform(Entity source, Entity target) {
         int dmg = this.random.nextInt(target.getMaxHealth() / 5);
         target.damage(dmg);

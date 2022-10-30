@@ -1,8 +1,6 @@
 package com.vamk.tbg.game;
 
 import com.vamk.tbg.Constants;
-import com.vamk.tbg.combat.FriendlyMove;
-import com.vamk.tbg.combat.HostileMove;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
@@ -11,8 +9,10 @@ import com.vamk.tbg.util.Tickable;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Entity implements Tickable {
     private final Map<StatusEffect, Integer> activeEffects = new HashMap<>();
@@ -20,18 +20,18 @@ public class Entity implements Tickable {
             new BleedingEffectHandler(this),
             new RegenEffectHandler(this)
     );
-    private final Move friendlyMove = new FriendlyMove();
-    private final Move hostileMove = new HostileMove();
     private final int id;
     private final boolean hostile;
     private final int maxHealth;
     private int health;
+    private final List<Move> moves;
 
-    public Entity(int id, boolean hostile, int maxHealth) {
+    public Entity(int id, boolean hostile, int maxHealth, List<Move> moves) {
         this.id = id;
         this.hostile = hostile;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+        this.moves = moves;
     }
 
     public int getId() {
@@ -58,16 +58,16 @@ public class Entity implements Tickable {
         this.health = Math.min(this.health + hp, this.maxHealth);
     }
 
+    public void heal() {
+        this.health = this.maxHealth;
+    }
+
     public boolean isDead() {
         return this.health <= 0;
     }
 
-    public Move getFriendlyMove() {
-        return this.friendlyMove;
-    }
-
-    public Move getHostileMove() {
-        return this.hostileMove;
+    public List<Move> getMoves() {
+        return List.copyOf(this.moves);
     }
 
     public void applyEffect(StatusEffect effect) {
@@ -78,12 +78,17 @@ public class Entity implements Tickable {
         return this.activeEffects.containsKey(effect);
     }
 
-    public void clearEffects() {
-        this.activeEffects.clear();
-    }
-
     public Set<StatusEffect> getEffects() {
         return Set.copyOf(this.activeEffects.keySet());
+    }
+
+    public void cure() {
+        Set<StatusEffect> negativeEffects = this.activeEffects.keySet()
+                .stream()
+                .filter(StatusEffect::isHarmful)
+                .collect(Collectors.toSet());
+
+        negativeEffects.forEach(this.activeEffects::remove);
     }
 
     @Override

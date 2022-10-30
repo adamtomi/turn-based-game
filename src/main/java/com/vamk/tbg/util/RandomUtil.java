@@ -3,10 +3,10 @@ package com.vamk.tbg.util;
 import java.util.List;
 import java.util.Random;
 
-public final class CollectionUtil {
+public final class RandomUtil {
     private static final Random RANDOM = new Random();
 
-    private CollectionUtil() {}
+    private RandomUtil() {}
 
     public static <T> void randomize(List<T> list) {
         int length = list.size();
@@ -22,5 +22,12 @@ public final class CollectionUtil {
     public static <T> T pickRandom(List<T> list) {
         int randIdx = RANDOM.nextInt(list.size());
         return list.get(randIdx);
+    }
+
+    public static boolean chance(int chance) {
+        if (chance == 100) return true;
+        if (chance == 0) return false;
+
+        return RANDOM.nextInt(1, 100) <= chance;
     }
 }
