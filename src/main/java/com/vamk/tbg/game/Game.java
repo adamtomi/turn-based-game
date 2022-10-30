@@ -90,7 +90,7 @@ public class Game implements AutoCloseable {
             target = readEntity();
         } else {
             move = this.random.nextInt(2) + 1; // Add 1 so that we never hit 0
-            target = CollectionUtil.chooseRandom(this.friends);
+            target = CollectionUtil.pickRandom(this.friends);
         }
 
         entity.tick();
@@ -131,12 +131,12 @@ public class Game implements AutoCloseable {
 
     // TODO refactor this crap
     private Entity readEntity() {
+        String options = this.hostiles.stream().filter(entity -> !entity.isDead())
+                .map(Entity::getId)
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
         while (true) {
             try {
-                String options = this.hostiles.stream().filter(entity -> !entity.isDead())
-                        .map(Entity::getId)
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(", "));
                 LOGGER.info("Which entity do you want to damage?");
                 LOGGER.info(options);
 

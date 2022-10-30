@@ -19,7 +19,7 @@ public final class CollectionUtil {
         }
     }
 
-    public static <T> T chooseRandom(List<T> list) {
+    public static <T> T pickRandom(List<T> list) {
         int randIdx = RANDOM.nextInt(list.size());
         return list.get(randIdx);
     }
