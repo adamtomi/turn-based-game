@@ -2,23 +2,25 @@ package com.vamk.tbg.combat;
 
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
 import java.util.Random;
 import java.util.logging.Logger;
 
-public class HostileMove implements Move {
-    private static final Logger LOGGER = LogUtil.getLogger(HostileMove.class);
+public class GenericAttackMove extends AbstractMove {
+    private static final Logger LOGGER = LogUtil.getLogger(GenericAttackMove.class);
     private final Random random = new Random();
 
-    @Override
-    public boolean isAttack() {
-        return true;
+    public GenericAttackMove() {
+        super("GENERIC_ATTACK", true, true);
     }
 
     @Override
-    public void perform(Entity source, Entity target) {
-        int dmg = this.random.nextInt(target.getMaxHealth() / 5);
+    public void perform(MoveContext context) {
+        Entity target = context.target();
+        Entity source = context.source();
+        int dmg = this.random.nextInt(target.getMaxHealth() / 10, target.getMaxHealth() / 5);
         target.damage(dmg);
         LOGGER.info("Dealing %d damage to entity: %d".formatted(dmg, target.getId()));
         if (source.hasEffect(StatusEffect.LIFESTEAL)) {

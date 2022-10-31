@@ -1,5 +1,10 @@
 package com.vamk.tbg.game;
 
+import com.vamk.tbg.combat.BuffMove;
+import com.vamk.tbg.combat.DebuffMove;
+import com.vamk.tbg.combat.GenericAttackMove;
+import com.vamk.tbg.combat.HealAllMove;
+import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
@@ -9,15 +14,14 @@ import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Scanner;
+import java.util.StringJoiner;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Game implements AutoCloseable {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final Scanner scanner = new Scanner(System.in);
-    private final Random random = new Random();
     /* Stores all friendly entities */
     private final List<Entity> friends = new ArrayList<>();
     /* Stores all hostile entities */
@@ -38,11 +42,19 @@ public class Game implements AutoCloseable {
     private void prepare() {
         LOGGER.info("Preparing game, spawning entities...");
         int nextId = 0;
+        // TODO read moves from config (entity presets?)
+        List<Move> moves = List.of(
+                new BuffMove(),
+                new HealAllMove(),
+                new DebuffMove(),
+                new GenericAttackMove()
+        );
+
         // TODO read i from config
         // TODO read maxHealth from config
         for (int i = 0; i < 3; i++) {
-            this.friends.add(new Entity(nextId++, false, 1000));
-            this.hostiles.add(new Entity(nextId++, true, 1000));
+            this.friends.add(new Entity(nextId++, false, 1000, moves));
+            this.hostiles.add(new Entity(nextId++, true, 1000, moves));
         }
 
         this.entities.addAll(this.friends);
@@ -67,7 +79,7 @@ public class Game implements AutoCloseable {
                 if (!shouldContinue()) return;
 
                 LOGGER.info("----------- | Entity %d is playing | -----------".formatted(entity.getId()));
-                maybePromptAndPlay(entity);
+                play(entity);
 
                 LOGGER.info("-----------------------------------------------");
             }
@@ -82,66 +94,67 @@ public class Game implements AutoCloseable {
         return !this.friends.isEmpty() && !this.hostiles.isEmpty();
     }
 
-    private void maybePromptAndPlay(Entity entity) {
-        int move = -1;
-        Entity target;
-        if (!entity.isHostile()) {
-            while (move == -1) move = promptUser();
-            target = readEntity();
-        } else {
-            move = this.random.nextInt(2) + 1; // Add 1 so that we never hit 0
-            target = RandomUtil.pickRandom(this.friends);
-        }
-
+    private void play(Entity entity) {
+        /*
+         * Make sure to tick the entity before potentially
+         * skipping their round.
+         */
         entity.tick();
-        play(entity, target, move);
-    }
-
-    private void play(Entity entity, Entity target, int move) {
-        LOGGER.info("Entity %d makes this move: %d".formatted(entity.getId(), move));
         // FROZEN rids the entitiy from this round
         if (entity.hasEffect(StatusEffect.FROZEN)) return;
 
-        if (move == 1) entity.getFriendlyMove().perform(entity, target);
-        else entity.getHostileMove().perform(entity, target);
-
-        // CAFFEINATED grants another turn
-        if (entity.hasEffect(StatusEffect.CAFFEINATED)) maybePromptAndPlay(entity);
-    }
-
-    // TODO refactor prompUser (maybe move to a different class?)
-    private int promptUser() {
-        try {
-            LOGGER.info("Make your move, my friend! (Select an option from below)");
-            LOGGER.info("1) Apply BUFFS to yourself | 2) Damage your enemy");
-
-            int move = this.scanner.nextInt();
-            if (move == 1 || move == 2) {
-                return move;
-
-            } else {
-                LOGGER.warning("%d is an invalid option, try again".formatted(move));
-            }
-        } catch (InputMismatchException ex) {
-            LOGGER.warning("You provided invalid input, try again");
+        Move move;
+        Entity target = null;
+        if (!entity.isHostile()) {
+            move = readMove(entity);
+            if (move.isTargeted()) target = readEntity(move);
+        } else {
+            move = RandomUtil.pickRandom(entity.getMoves());
+            if (move.isTargeted()) target = RandomUtil.pickRandom(move.isAttack() ? this.friends : this.hostiles);
         }
 
-        return -1;
+        MoveContext context = new MoveContext(entity, target, this.entities);
+        move.perform(context);
+
+        // CAFFEINATED grants another turn
+        if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
+    }
+
+    private Move readMove(Entity entity) {
+        List<Move> moves = entity.getMoves();
+        StringJoiner options = new StringJoiner(" ");
+        for (int i = 0; i < moves.size(); i++) {
+            options.add("%d)".formatted(i))
+                    .add(moves.get(i).getId());
+        }
+
+        while (true) {
+            try {
+                LOGGER.info("Make your move, my friend! (Select an option from below)");
+                LOGGER.info(options.toString());
+
+                int move = this.scanner.nextInt();
+                return entity.getMoves().get(move);
+            } catch (IndexOutOfBoundsException | InputMismatchException ex) {
+                LOGGER.warning("You provided invalid input, try again");
+            }
+        }
     }
 
     // TODO refactor this crap
-    private Entity readEntity() {
-        String options = this.hostiles.stream().filter(entity -> !entity.isDead())
+    private Entity readEntity(Move move) {
+        List<Entity> potentialTargets = move.isAttack() ? this.hostiles : this.friends;
+        String options = potentialTargets.stream().filter(entity -> !entity.isDead())
                 .map(Entity::getId)
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
         while (true) {
             try {
-                LOGGER.info("Which entity do you want to damage?");
+                LOGGER.info("Which entity do you want to perform your move on?");
                 LOGGER.info(options);
 
                 int entityId = this.scanner.nextInt();
-                Optional<Entity> target = this.hostiles.stream().filter(entity -> entity.getId() == entityId)
+                Optional<Entity> target = potentialTargets.stream().filter(entity -> entity.getId() == entityId)
                         .findFirst();
                 if (target.isEmpty()) {
                     LOGGER.warning("There's no entity with id %d".formatted(entityId));

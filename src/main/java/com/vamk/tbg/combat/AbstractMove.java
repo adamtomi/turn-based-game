@@ -3,10 +3,12 @@ package com.vamk.tbg.combat;
 public abstract class AbstractMove implements Move {
     private final String id;
     private final boolean attack;
+    private final boolean targeted;
 
-    AbstractMove(String id, boolean attack) {
+    AbstractMove(String id, boolean attack, boolean targeted) {
         this.id = id;
         this.attack = attack;
+        this.targeted = targeted;
     }
 
     @Override
@@ -17,5 +19,10 @@ public abstract class AbstractMove implements Move {
     @Override
     public boolean isAttack() {
         return this.attack;
+    }
+
+    @Override
+    public boolean isTargeted() {
+        return this.targeted;
     }
 }

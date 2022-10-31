@@ -10,7 +10,7 @@ public class CureMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(CureMove.class);
 
     public CureMove() {
-        super("MOVE", false);
+        super("MOVE", false, true);
     }
 
     @Override

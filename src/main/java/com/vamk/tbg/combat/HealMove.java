@@ -15,7 +15,7 @@ public class HealMove extends AbstractMove {
     private static final int LIFESTEAL_CHANCE = 10;
 
     public HealMove() {
-        super("HEAL", false);
+        super("HEAL", false, true);
     }
 
     @Override

@@ -8,5 +8,7 @@ public interface Move {
 
     boolean isAttack();
 
+    boolean isTargeted();
+
     void perform(MoveContext context);
 }

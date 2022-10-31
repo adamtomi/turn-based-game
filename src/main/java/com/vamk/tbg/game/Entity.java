@@ -42,6 +42,10 @@ public class Entity implements Tickable {
         return this.hostile;
     }
 
+    public boolean isEnemyOf(Entity that) {
+        return that.hostile != this.hostile;
+    }
+
     public int getMaxHealth() {
         return this.maxHealth;
     }
