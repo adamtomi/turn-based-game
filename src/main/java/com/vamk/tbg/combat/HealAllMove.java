@@ -15,6 +15,7 @@ public class HealAllMove extends AbstractMove {
 
     @Override
     public void perform(MoveContext context) {
+        // TODO well... this heals all entities... that should not be the case
         for (Entity entity : context.allEntities()) {
             int hp = (int) (entity.getHealth() * 0.1);
             entity.heal(hp);
