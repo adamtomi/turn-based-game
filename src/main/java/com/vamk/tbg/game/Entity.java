@@ -102,7 +102,7 @@ public class Entity implements Tickable {
         for (Map.Entry<StatusEffect, Integer> entry : this.activeEffects.entrySet()) {
             int rounds = entry.getValue() - 1;
 
-            if (rounds <= 0) expired.add(entry.getKey());
+            if (rounds < 0) expired.add(entry.getKey());
             else entry.setValue(rounds);
         }
 
