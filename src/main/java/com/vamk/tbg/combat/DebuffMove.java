@@ -13,7 +13,7 @@ public class DebuffMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(DebuffMove.class);
     private static final int BLEEDING_CHANCE = 50;
     private static final int FROZEN_CHANCE = 10;
-    private static final int CONFUSED_CHANCE = 5;
+    private static final int CONFUSED_CHANCE = 50;
 
     public DebuffMove() {
         super("DEBUFF", true, true);

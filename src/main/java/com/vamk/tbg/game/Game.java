@@ -105,12 +105,20 @@ public class Game implements AutoCloseable {
 
         Move move;
         Entity target = null;
-        if (!entity.isHostile()) {
+        boolean confused = entity.hasEffect(StatusEffect.CONFUSED);
+        if (!entity.isHostile() && !confused) {
             move = readMove(entity);
             if (move.isTargeted()) target = readEntity(move);
         } else {
             move = RandomUtil.pickRandom(entity.getMoves());
-            if (move.isTargeted()) target = RandomUtil.pickRandom(move.isAttack() ? this.friends : this.hostiles);
+            /*List<Entity> targets = move.isAttack()
+                    ? (confused ? this.hostiles : this.friends)
+                    : (confused ? this.friends : this.hostiles);*/
+            List<Entity> targets = this.entities.stream()
+                    .filter(x -> confused != x.isEnemyOf(entity))
+                    .filter(x -> !x.isDead())
+                    .toList();
+            if (move.isTargeted()) target = RandomUtil.pickRandom(targets);
         }
 
         MoveContext context = new MoveContext(entity, target, this.entities);
