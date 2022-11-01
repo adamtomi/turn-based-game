@@ -100,7 +100,7 @@ public class Game implements AutoCloseable {
          * skipping their round.
          */
         entity.tick();
-        // FROZEN rids the entitiy from this round
+        // FROZEN rids the entity from this round
         if (entity.hasEffect(StatusEffect.FROZEN)) return;
 
         Move move;
