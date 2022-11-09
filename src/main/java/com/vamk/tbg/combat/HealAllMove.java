@@ -15,8 +15,11 @@ public class HealAllMove extends AbstractMove {
 
     @Override
     public void perform(MoveContext context) {
-        // TODO well... this heals all entities... that should not be the case
+        Entity source = context.source();
         for (Entity entity : context.allEntities()) {
+            // Only heal friendly entities
+            if (source.isEnemyOf(entity)) continue;
+
             int hp = (int) (entity.getHealth() * 0.1);
             entity.heal(hp);
         }
