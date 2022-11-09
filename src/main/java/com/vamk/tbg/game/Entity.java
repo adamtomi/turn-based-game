@@ -42,8 +42,21 @@ public class Entity implements Tickable {
         return this.hostile;
     }
 
+    /**
+     * Determines whether this entity is an enemy of
+     * "that" entity. This method takes the CONFUSED
+     * status effect into consideration.
+     *
+     * NOTE: This relationship is not bi-directional.
+     * This entity might be hostile towards "that"
+     * entity, but that doesn't mean it's true
+     * the other way around.
+     *
+     * @see StatusEffect#CONFUSED
+     * @return true if this entity can attack "that" entity
+     */
     public boolean isEnemyOf(Entity that) {
-        return that.hostile != this.hostile;
+        return hasEffect(StatusEffect.CONFUSED) == (this.hostile == that.hostile);
     }
 
     public int getMaxHealth() {

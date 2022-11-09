@@ -105,18 +105,20 @@ public class Game implements AutoCloseable {
 
         Move move;
         Entity target = null;
-        boolean confused = entity.hasEffect(StatusEffect.CONFUSED);
-        if (!entity.isHostile() && !confused) {
+        if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
             move = readMove(entity);
             if (move.isTargeted()) target = readEntity(move);
         } else {
             move = RandomUtil.pickRandom(entity.getMoves());
-            List<Entity> targets = this.entities.stream()
-                    .filter(x -> move.isAttack() && !x.equals(entity)) // Do not let entity to attack itself
-                    .filter(x -> confused == (move.isAttack() != x.isEnemyOf(entity)))
-                    .filter(x -> !x.isDead())
-                    .toList();
-            if (move.isTargeted()) target = RandomUtil.pickRandom(targets);
+            if (move.isTargeted()) {
+                List<Entity> targets = this.entities.stream()
+                        .filter(x -> !x.isDead())
+                        .filter(x -> !move.isAttack() || !x.equals(entity)) // Do not let entity to attack itself
+                        .filter(x -> move.isAttack() == entity.isEnemyOf(x))
+                        .toList();
+
+                target = RandomUtil.pickRandom(targets);
+            }
         }
 
         MoveContext context = new MoveContext(entity, target, this.entities);
@@ -147,7 +149,7 @@ public class Game implements AutoCloseable {
         }
     }
 
-    // TODO refactor this crap
+    // TODO This method will be removed later (once the GUI part is up and running)
     private Entity readEntity(Move move) {
         List<Entity> potentialTargets = move.isAttack() ? this.hostiles : this.friends;
         String options = potentialTargets.stream().filter(entity -> !entity.isDead())
