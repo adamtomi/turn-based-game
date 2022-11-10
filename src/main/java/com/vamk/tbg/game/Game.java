@@ -19,7 +19,7 @@ import java.util.StringJoiner;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class Game implements AutoCloseable {
+public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final Scanner scanner = new Scanner(System.in);
     /* Stores all friendly entities */
@@ -208,8 +208,7 @@ public class Game implements AutoCloseable {
         if (hostilesDiff > 0) LOGGER.info("Removed %d dead hostile entities".formatted(hostilesDiff));
     }
 
-    @Override
-    public void close() {
+    public void destroy() {
         this.scanner.close();
     }
 }
