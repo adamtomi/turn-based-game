@@ -86,28 +86,28 @@ public class Game {
          */
         entity.tick();
         // FROZEN rids the entity from this round
-        if (entity.hasEffect(StatusEffect.FROZEN)) return;
+        if (!entity.hasEffect(StatusEffect.FROZEN)) {
+            Move move;
+            Entity target = null;
+            if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
+                move = readMove(entity);
+                if (move.isTargeted()) target = readEntity(move);
+            } else {
+                move = RandomUtil.pickRandom(entity.getMoves());
+                if (move.isTargeted()) {
+                    List<Entity> targets = this.entities.stream()
+                            .filter(x -> !x.isDead())
+                            .filter(x -> !move.isAttack() || !x.equals(entity)) // Do not let entity to attack itself
+                            .filter(x -> move.isAttack() == entity.isEnemyOf(x))
+                            .toList();
 
-        Move move;
-        Entity target = null;
-        if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
-            move = readMove(entity);
-            if (move.isTargeted()) target = readEntity(move);
-        } else {
-            move = RandomUtil.pickRandom(entity.getMoves());
-            if (move.isTargeted()) {
-                List<Entity> targets = this.entities.stream()
-                        .filter(x -> !x.isDead())
-                        .filter(x -> !move.isAttack() || !x.equals(entity)) // Do not let entity to attack itself
-                        .filter(x -> move.isAttack() == entity.isEnemyOf(x))
-                        .toList();
-
-                target = RandomUtil.pickRandom(targets);
+                    target = RandomUtil.pickRandom(targets);
+                }
             }
-        }
 
-        MoveContext context = new MoveContext(entity, target, this.entities);
-        move.perform(context);
+            MoveContext context = new MoveContext(entity, target, this.entities);
+            move.perform(context);
+        }
 
         // CAFFEINATED grants another turn
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
