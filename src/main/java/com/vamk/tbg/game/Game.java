@@ -22,15 +22,6 @@ import java.util.stream.Collectors;
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final Scanner scanner = new Scanner(System.in);
-    /* Stores all friendly entities */
-    private final List<Entity> friends = new ArrayList<>();
-    /* Stores all hostile entities */
-    private final List<Entity> hostiles = new ArrayList<>();
-    /*
-     * This is list responsible for storing all entities
-     * as well as determining the order in which these
-     * entities get to play their turns.
-     */
     private final List<Entity> entities = new ArrayList<>();
 
     public void launch() {
@@ -53,12 +44,9 @@ public class Game {
         // TODO read i from config
         // TODO read maxHealth from config
         for (int i = 0; i < 3; i++) {
-            this.friends.add(new Entity(nextId++, false, 1000, moves));
-            this.hostiles.add(new Entity(nextId++, true, 1000, moves));
+            this.entities.add(new Entity(nextId++, false, 1000, moves));
+            this.entities.add(new Entity(nextId++, true, 1000, moves));
         }
-
-        this.entities.addAll(this.friends);
-        this.entities.addAll(this.hostiles);
 
         RandomUtil.randomize(this.entities);
         LOGGER.info("Done!");
@@ -71,7 +59,8 @@ public class Game {
             // items from the list while iterating through it.
             for (Iterator<Entity> iter = this.entities.iterator(); iter.hasNext();) {
                 Entity entity = iter.next();
-                if (checkDeadEntity(entity)) {
+                if (entity.isDead()) {
+                    LOGGER.info("Entity %d died, removing it from the board...".formatted(entity.getId()));
                     iter.remove();
                     continue;
                 }
@@ -91,7 +80,8 @@ public class Game {
     }
 
     private boolean shouldContinue() {
-        return !this.friends.isEmpty() && !this.hostiles.isEmpty();
+        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
+        return hostiles > 0 && this.entities.size() - hostiles > 0;
     }
 
     private void play(Entity entity) {
@@ -128,6 +118,7 @@ public class Game {
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
     }
 
+    // TODO This method will be removed later (once the GUI part is up and running)
     private Move readMove(Entity entity) {
         List<Move> moves = entity.getMoves();
         StringJoiner options = new StringJoiner(" ");
@@ -151,8 +142,11 @@ public class Game {
 
     // TODO This method will be removed later (once the GUI part is up and running)
     private Entity readEntity(Move move) {
-        List<Entity> potentialTargets = move.isAttack() ? this.hostiles : this.friends;
-        String options = potentialTargets.stream().filter(entity -> !entity.isDead())
+        List<Entity> potentialTargets = this.entities.stream()
+                .filter(entity -> !entity.isDead())
+                .filter(entity -> move.isAttack() == entity.isHostile())
+                .toList();
+        String options = potentialTargets.stream()
                 .map(Entity::getId)
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
@@ -176,36 +170,15 @@ public class Game {
         }
     }
 
+    // TODO This method will be removed later (once the GUI part is up and running)
     private void printEntities() {
         LOGGER.info("== Current entity info ==");
         this.entities.forEach(entity -> LOGGER.info("ID: %d | Health: %d | Effects: %s | Hostile: %b"
                 .formatted(entity.getId(), entity.getHealth(), entity.getEffects(), entity.isHostile())));
     }
 
-    private boolean checkDeadEntity(Entity entity) {
-        if (!entity.isDead()) return false;
-
-        LOGGER.info("Entity %d died, removing it from the board...".formatted(entity.getId()));
-        LOGGER.info("Hostile: %d | Friendly: %d".formatted(this.hostiles.size(), this.friends.size()));
-        if (entity.isHostile()) this.hostiles.remove(entity);
-        else this.friends.remove(entity);
-
-        LOGGER.info("Hostile: %d | Friendly: %d".formatted(this.hostiles.size(), this.friends.size()));
-
-        return true;
-    }
-
     private void cleanupDeadEntities() {
         this.entities.removeIf(Entity::isDead);
-        int friends = this.friends.size();
-        this.friends.removeIf(Entity::isDead);
-        int friendsDiff = friends - this.friends.size();
-        if (friendsDiff > 0) LOGGER.info("Removed %d dead friendly entities".formatted(friendsDiff));
-
-        int hostiles = this.hostiles.size();
-        this.hostiles.removeIf(Entity::isDead);
-        int hostilesDiff = hostiles - this.hostiles.size();
-        if (hostilesDiff > 0) LOGGER.info("Removed %d dead hostile entities".formatted(hostilesDiff));
     }
 
     public void destroy() {
