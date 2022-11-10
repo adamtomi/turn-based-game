@@ -11,7 +11,6 @@ import com.vamk.tbg.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -55,25 +54,21 @@ public class Game {
     private void gameLoop() {
         while (true) {
             LOGGER.info("=========== | Entering game cycle | ===========");
-            // Use iterator instead of regular for loop, because it can remove
-            // items from the list while iterating through it.
-            for (Iterator<Entity> iter = this.entities.iterator(); iter.hasNext();) {
-                Entity entity = iter.next();
-                if (entity.isDead()) {
-                    LOGGER.info("Entity %d died, removing it from the board...".formatted(entity.getId()));
-                    iter.remove();
-                    continue;
-                }
-
+            /*
+             * Don't use Java's enhanced for loop, since this#cleanupDeadEntities
+             * might remove elements from the list while the iteration is happening,
+             * which would lead to concurrent modifications.
+             */
+            for (int i = 0; i < this.entities.size(); i++) {
                 if (!shouldContinue()) return;
 
+                Entity entity = this.entities.get(i);
                 LOGGER.info("----------- | Entity %d is playing | -----------".formatted(entity.getId()));
                 play(entity);
-
+                cleanupDeadEntities();
                 LOGGER.info("-----------------------------------------------");
             }
 
-            cleanupDeadEntities();
             printEntities();
             LOGGER.info("===============================================");
         }
@@ -178,7 +173,10 @@ public class Game {
     }
 
     private void cleanupDeadEntities() {
+        int entities = this.entities.size();
         this.entities.removeIf(Entity::isDead);
+        int diff = entities - this.entities.size();
+        if (diff > 0) LOGGER.info("Removed %d dead entities from the board");
     }
 
     public void destroy() {
