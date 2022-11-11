@@ -176,7 +176,7 @@ public class Game {
         int entities = this.entities.size();
         this.entities.removeIf(Entity::isDead);
         int diff = entities - this.entities.size();
-        if (diff > 0) LOGGER.info("Removed %d dead entities from the board");
+        if (diff > 0) LOGGER.info("Removed %d dead entities from the board".formatted(diff));
     }
 
     public void destroy() {
