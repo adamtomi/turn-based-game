@@ -10,10 +10,11 @@ import java.util.logging.Logger;
 
 public class GenericAttackMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(GenericAttackMove.class);
-    private final Random random = new Random();
+    private final Random random;
 
     public GenericAttackMove() {
         super("GENERIC_ATTACK", true, true);
+        this.random = new Random();
     }
 
     @Override

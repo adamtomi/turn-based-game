@@ -20,8 +20,13 @@ import java.util.stream.Collectors;
 
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
-    private final Scanner scanner = new Scanner(System.in);
-    private final List<Entity> entities = new ArrayList<>();
+    private final Scanner scanner;
+    private final List<Entity> entities;
+
+    public Game() {
+        this.scanner = new Scanner(System.in);
+        this.entities = new ArrayList<>();
+    }
 
     public void launch() {
         prepare();

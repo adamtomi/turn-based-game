@@ -15,11 +15,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Entity implements Tickable {
-    private final Map<StatusEffect, Integer> activeEffects = new HashMap<>();
-    private final Set<Tickable> tickables = Set.of(
-            new BleedingEffectHandler(this),
-            new RegenEffectHandler(this)
-    );
+    private final Map<StatusEffect, Integer> activeEffects;
+    private final Set<Tickable> tickables;
     private final int id;
     private final boolean hostile;
     private final int maxHealth;
@@ -32,6 +29,12 @@ public class Entity implements Tickable {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.moves = moves;
+
+        this.activeEffects = new HashMap<>();
+        this.tickables = Set.of(
+                new BleedingEffectHandler(this),
+                new RegenEffectHandler(this)
+        );
     }
 
     public int getId() {

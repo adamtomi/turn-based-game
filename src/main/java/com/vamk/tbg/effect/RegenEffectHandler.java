@@ -8,10 +8,11 @@ import java.util.logging.Logger;
 
 public class RegenEffectHandler implements StatusEffectHandler {
     private static final Logger LOGGER = LogUtil.getLogger(RegenEffectHandler.class);
-    private final Random random = new Random();
+    private final Random random;
     private final Entity entity;
 
     public RegenEffectHandler(Entity entity) {
+        this.random = new Random();
         this.entity = entity;
     }
 
