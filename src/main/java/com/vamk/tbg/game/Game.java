@@ -6,8 +6,10 @@ import com.vamk.tbg.combat.GenericAttackMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.ui.ButtonContainer;
 import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
+import com.vamk.tbg.util.UserInput;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -30,6 +32,7 @@ public class Game {
 
     public void launch() {
         prepare();
+        ButtonContainer.getInstance().init();
         gameLoop();
         LOGGER.info("Shutting down, thank you :)");
     }
@@ -95,8 +98,11 @@ public class Game {
             Move move;
             Entity target = null;
             if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
-                move = readMove(entity);
-                if (move.isTargeted()) target = readEntity(move);
+                // move = entity.getMoves().get(ButtonContainer.getInstance().getMoveIdx());
+                // if (move.isTargeted()) target = ButtonContainer.getInstance().awaitEntity();
+                UserInput input = ButtonContainer.getInstance().readUserInput();
+                move = entity.getMoves().get(input.moveIndex());
+                if (move.isTargeted()) target = input.target();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
                 if (move.isTargeted()) {
@@ -119,58 +125,6 @@ public class Game {
     }
 
     // TODO This method will be removed later (once the GUI part is up and running)
-    private Move readMove(Entity entity) {
-        List<Move> moves = entity.getMoves();
-        StringJoiner options = new StringJoiner(" ");
-        for (int i = 0; i < moves.size(); i++) {
-            options.add("%d)".formatted(i))
-                    .add(moves.get(i).getId());
-        }
-
-        while (true) {
-            try {
-                LOGGER.info("Make your move, my friend! (Select an option from below)");
-                LOGGER.info(options.toString());
-
-                int move = this.scanner.nextInt();
-                return entity.getMoves().get(move);
-            } catch (IndexOutOfBoundsException | InputMismatchException ex) {
-                LOGGER.warning("You provided invalid input, try again");
-            }
-        }
-    }
-
-    // TODO This method will be removed later (once the GUI part is up and running)
-    private Entity readEntity(Move move) {
-        List<Entity> potentialTargets = this.entities.stream()
-                .filter(entity -> !entity.isDead())
-                .filter(entity -> move.isAttack() == entity.isHostile())
-                .toList();
-        String options = potentialTargets.stream()
-                .map(Entity::getId)
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
-        while (true) {
-            try {
-                LOGGER.info("Which entity do you want to perform your move on?");
-                LOGGER.info(options);
-
-                int entityId = this.scanner.nextInt();
-                Optional<Entity> target = potentialTargets.stream().filter(entity -> entity.getId() == entityId)
-                        .findFirst();
-                if (target.isEmpty()) {
-                    LOGGER.warning("There's no entity with id %d".formatted(entityId));
-                    continue;
-                }
-
-                return target.orElseThrow();
-            } catch (InputMismatchException ex) {
-                LOGGER.warning("You provided invalid input, try again");
-            }
-        }
-    }
-
-    // TODO This method will be removed later (once the GUI part is up and running)
     private void printEntities() {
         LOGGER.info("== Current entity info ==");
         this.entities.forEach(entity -> LOGGER.info("ID: %d | Health: %d | Effects: %s | Hostile: %b"
@@ -182,6 +136,10 @@ public class Game {
         this.entities.removeIf(Entity::isDead);
         int diff = entities - this.entities.size();
         if (diff > 0) LOGGER.info("Removed %d dead entities from the board".formatted(diff));
+    }
+
+    public List<Entity> getEntities() {
+        return List.copyOf(this.entities);
     }
 
     public void destroy() {
