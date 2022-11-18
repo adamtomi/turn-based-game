@@ -12,21 +12,14 @@ import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.UserInput;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.StringJoiner;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
-    private final Scanner scanner;
     private final List<Entity> entities;
 
     public Game() {
-        this.scanner = new Scanner(System.in);
         this.entities = new ArrayList<>();
     }
 
@@ -98,8 +91,6 @@ public class Game {
             Move move;
             Entity target = null;
             if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
-                // move = entity.getMoves().get(ButtonContainer.getInstance().getMoveIdx());
-                // if (move.isTargeted()) target = ButtonContainer.getInstance().awaitEntity();
                 UserInput input = ButtonContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
                 if (move.isTargeted()) target = input.target();
@@ -140,9 +131,5 @@ public class Game {
 
     public List<Entity> getEntities() {
         return List.copyOf(this.entities);
-    }
-
-    public void destroy() {
-        this.scanner.close();
     }
 }

@@ -10,7 +10,6 @@ public class Main {
         GameContainer container = new GameContainer(game);
         container.init();
         game.launch();
-        game.destroy();
         System.exit(0);
     }
 }
