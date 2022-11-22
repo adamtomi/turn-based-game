@@ -14,7 +14,7 @@ public class SplashDamageMove extends AbstractMove {
     private static final int BLEEDING_CHANCE = 50;
 
     public SplashDamageMove() {
-        super("SPLASH_DAMAGE", true, false);
+        super("SPLASH_DAMAGE", true);
     }
 
     @Override

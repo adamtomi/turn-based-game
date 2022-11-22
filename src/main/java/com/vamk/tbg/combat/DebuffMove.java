@@ -16,7 +16,7 @@ public class DebuffMove extends AbstractMove {
     private static final int CONFUSED_CHANCE = 5;
 
     public DebuffMove() {
-        super("DEBUFF", true, true);
+        super("DEBUFF", true);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class BuffMove extends AbstractMove {
     private static final int CAFFEINATED_CHANCE = 5;
 
     public BuffMove() {
-        super("BUFF", false, true);
+        super("BUFF", false);
     }
 
     @Override

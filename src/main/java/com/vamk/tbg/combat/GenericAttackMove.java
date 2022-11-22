@@ -13,7 +13,7 @@ public class GenericAttackMove extends AbstractMove {
     private final Random random;
 
     public GenericAttackMove() {
-        super("GENERIC_ATTACK", true, true);
+        super("GENERIC_ATTACK", true);
         this.random = new Random();
     }
 

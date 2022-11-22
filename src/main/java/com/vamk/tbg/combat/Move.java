@@ -9,9 +9,6 @@ public interface Move {
 
     boolean isAttack();
 
-    @Deprecated
-    boolean isTargeted();
-
     boolean isApplicableTo(Entity entity);
 
     void perform(MoveContext context);

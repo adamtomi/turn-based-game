@@ -10,7 +10,7 @@ public class HealAllMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealAllMove.class);
 
     public HealAllMove() {
-        super("HEAL_ALL", false, false);
+        super("HEAL_ALL", false);
     }
 
     @Override
