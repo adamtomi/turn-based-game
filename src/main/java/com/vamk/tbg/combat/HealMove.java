@@ -38,6 +38,6 @@ public class HealMove extends AbstractMove {
 
     @Override
     public boolean isApplicableTo(Entity entity) {
-        return entity.getHealth() < entity.getMaxHealth();
+        return entity.getHealth().get() < entity.getMaxHealth();
     }
 }

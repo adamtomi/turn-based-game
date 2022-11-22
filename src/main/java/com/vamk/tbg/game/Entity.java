@@ -6,6 +6,7 @@ import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.util.Tickable;
+import com.vamk.tbg.util.Watchable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,14 +21,14 @@ public class Entity implements Tickable {
     private final int id;
     private final boolean hostile;
     private final int maxHealth;
-    private int health;
+    private final Watchable<Integer> health;
     private final List<Move> moves;
 
     public Entity(int id, boolean hostile, int maxHealth, List<Move> moves) {
         this.id = id;
         this.hostile = hostile;
         this.maxHealth = maxHealth;
-        this.health = maxHealth;
+        this.health = new Watchable<>(maxHealth);
         this.moves = moves;
 
         this.activeEffects = new HashMap<>();
@@ -66,24 +67,24 @@ public class Entity implements Tickable {
         return this.maxHealth;
     }
 
-    public int getHealth() {
+    public Watchable<Integer> getHealth() {
         return this.health;
     }
 
     public void damage(int dmg) {
-        this.health = Math.max(0, this.health - dmg);
+        this.health.set(Math.max(0, this.health.get() - dmg));
     }
 
     public void heal(int hp) {
-        this.health = Math.min(this.health + hp, this.maxHealth);
+        this.health.set(Math.min(this.health.get() + hp, this.maxHealth));
     }
 
     public void heal() {
-        this.health = this.maxHealth;
+        this.health.set(this.maxHealth);
     }
 
     public boolean isDead() {
-        return this.health <= 0;
+        return this.health.get() <= 0;
     }
 
     public List<Move> getMoves() {
@@ -98,8 +99,8 @@ public class Entity implements Tickable {
         return this.activeEffects.containsKey(effect);
     }
 
-    public Set<StatusEffect> getEffects() {
-        return Set.copyOf(this.activeEffects.keySet());
+    public Map<StatusEffect, Integer> getEffects() {
+        return Map.copyOf(this.activeEffects);
     }
 
     public void cure() {
@@ -127,7 +128,7 @@ public class Entity implements Tickable {
 
     @Override
     public String toString() {
-        return "Entity{ id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health);
+        return "Entity { id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health);
     }
 
     @Override

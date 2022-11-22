@@ -1,14 +1,13 @@
 package com.vamk.tbg;
 
 import com.vamk.tbg.game.Game;
-import com.vamk.tbg.ui.GameContainer;
+import com.vamk.tbg.ui.MainContainer;
 
 public class Main {
 
     public static void main(String[] args) {
         Game game = new Game();
-        GameContainer container = new GameContainer(game);
-        container.init();
+        new MainContainer(game);
         game.launch();
         System.exit(0);
     }

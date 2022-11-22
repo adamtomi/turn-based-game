@@ -21,7 +21,7 @@ public class BleedingEffectHandler implements StatusEffectHandler {
         if (!this.entity.hasEffect(StatusEffect.BLEEDING)) return;
 
         // TODO make this configurable
-        int damage = this.random.nextInt(Math.max((int) (this.entity.getHealth() * 0.05), 1));
+        int damage = this.random.nextInt(Math.max((int) (this.entity.getMaxHealth() * 0.05), 1));
         this.entity.damage(damage);
         LOGGER.info("Entity %d loses %d health to bleeding".formatted(this.entity.getId(), damage));
     }

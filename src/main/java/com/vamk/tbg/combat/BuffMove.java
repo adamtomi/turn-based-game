@@ -24,7 +24,7 @@ public class BuffMove extends AbstractMove {
         Entity source = context.source();
         Entity target = context.target();
 
-        int hp = target.getHealth() / 10;
+        int hp = target.getHealth().get() / 10;
         target.heal(hp);
         LOGGER.info("Entity %d has gained %d HP back thanks to %d".formatted(target.getId(), hp, source.getId()));
         if (chance(REGEN_CHANCE)) {

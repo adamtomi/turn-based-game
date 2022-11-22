@@ -20,7 +20,7 @@ public class HealAllMove extends AbstractMove {
             // Only heal friendly entities
             if (source.isEnemyOf(entity)) continue;
 
-            int hp = (int) (entity.getHealth() * 0.1);
+            int hp = (int) (entity.getHealth().get() * 0.1);
             entity.heal(hp);
         }
 

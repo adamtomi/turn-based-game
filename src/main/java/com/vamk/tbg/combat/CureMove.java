@@ -24,7 +24,8 @@ public class CureMove extends AbstractMove {
 
     @Override
     public boolean isApplicableTo(Entity entity) {
-        int harmfulEffects = (int) entity.getEffects().stream()
+        int harmfulEffects = (int) entity.getEffects().keySet()
+                .stream()
                 .filter(StatusEffect::isHarmful)
                 .count();
         return harmfulEffects > 0;

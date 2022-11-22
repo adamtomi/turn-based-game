@@ -21,7 +21,7 @@ public class RegenEffectHandler implements StatusEffectHandler {
         if (!this.entity.hasEffect(StatusEffect.REGENERATION)) return;
 
         // TODO make this configurable
-        int hp = this.random.nextInt(Math.max((int) (this.entity.getHealth() * 0.01), 1));
+        int hp = this.random.nextInt(Math.max((int) (this.entity.getMaxHealth() * 0.01), 1));
         this.entity.heal(hp);
         LOGGER.info("Entity %d gains %d health thanks to regeneration".formatted(this.entity.getId(), hp));
     }

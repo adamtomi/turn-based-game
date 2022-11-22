@@ -22,7 +22,7 @@ public class DebuffMove extends AbstractMove {
     @Override
     public void perform(MoveContext context) {
         Entity target = context.target();
-        int dmg = (int) (target.getHealth() * 0.1);
+        int dmg = (int) (target.getHealth().get() * 0.1);
         target.damage(dmg);
         LOGGER.info("Entity %d is lost %d hp thanks to %d".formatted(target.getId(), dmg, context.source().getId()));
 

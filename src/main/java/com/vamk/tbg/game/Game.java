@@ -6,7 +6,7 @@ import com.vamk.tbg.combat.GenericAttackMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.StatusEffect;
-import com.vamk.tbg.ui.ButtonContainer;
+import com.vamk.tbg.ui.GameContainer;
 import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.UserInput;
@@ -25,7 +25,7 @@ public class Game {
 
     public void launch() {
         prepare();
-        ButtonContainer.getInstance().init();
+        GameContainer.getInstance().init();
         gameLoop();
         LOGGER.info("Shutting down, thank you :)");
     }
@@ -86,18 +86,18 @@ public class Game {
          * skipping their round.
          */
         entity.tick();
-        ButtonContainer.getInstance().tick();
+        GameContainer.getInstance().tick();
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {
             Move move;
             Entity target;
             if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
-                ButtonContainer.getInstance().enableMoveButtons();
-                ButtonContainer.getInstance().updateButtonsFor(entity);
-                UserInput input = ButtonContainer.getInstance().readUserInput();
+                GameContainer.getInstance().enableMoveButtons();
+                GameContainer.getInstance().updateButtonsFor(entity);
+                UserInput input = GameContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
                 target = input.target();
-                ButtonContainer.getInstance().disableMoveButtons();
+                GameContainer.getInstance().disableMoveButtons();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
                 List<Entity> targets = this.entities.stream()
@@ -121,7 +121,7 @@ public class Game {
     private void printEntities() {
         LOGGER.info("== Current entity info ==");
         this.entities.forEach(entity -> LOGGER.info("ID: %d | Health: %d | Effects: %s | Hostile: %b"
-                .formatted(entity.getId(), entity.getHealth(), entity.getEffects(), entity.isHostile())));
+                .formatted(entity.getId(), entity.getHealth().get(), entity.getEffects(), entity.isHostile())));
     }
 
     private void cleanupDeadEntities() {
