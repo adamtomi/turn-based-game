@@ -35,4 +35,9 @@ public class HealMove extends AbstractMove {
             LOGGER.info("They also got lifesteal now");
         }
     }
+
+    @Override
+    public boolean isApplicableTo(Entity entity) {
+        return entity.getHealth() < entity.getMaxHealth();
+    }
 }

@@ -24,6 +24,10 @@ public class HealAllMove extends AbstractMove {
             entity.heal(hp);
         }
 
+        // The target of this move gets extra health
+        Entity target = context.target();
+        int hp = (int) (target.getMaxHealth() * 0.1);
+        target.heal(hp);
         LOGGER.info("Entity %d healed all their teammates".formatted(context.source().getId()));
     }
 }

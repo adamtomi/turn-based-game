@@ -33,6 +33,11 @@ public class SplashDamageMove extends AbstractMove {
             entity.damage(dmg);
         }
 
+        // Target loses extra health
+        Entity target = context.target();
+        int hp = target.getMaxHealth() / 12;
+        target.damage(hp);
+
         LOGGER.info("Entity %d damaged all its enemies...".formatted(source.getId()));
     }
 }

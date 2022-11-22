@@ -89,22 +89,20 @@ public class Game {
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {
             Move move;
-            Entity target = null;
+            Entity target;
             if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
                 UserInput input = ButtonContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
-                if (move.isTargeted()) target = input.target();
+                target = input.target();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
-                if (move.isTargeted()) {
-                    List<Entity> targets = this.entities.stream()
-                            .filter(x -> !x.isDead())
-                            .filter(x -> !move.isAttack() || !x.equals(entity)) // Do not let entity to attack itself
-                            .filter(x -> move.isAttack() == entity.isEnemyOf(x))
-                            .toList();
+                List<Entity> targets = this.entities.stream()
+                        .filter(x -> !x.isDead())
+                        .filter(x -> !move.isAttack() || !x.equals(entity)) // Do not let entity attack itself
+                        .filter(x -> move.isAttack() == entity.isEnemyOf(x))
+                        .toList();
 
-                    target = RandomUtil.pickRandom(targets);
-                }
+                target = RandomUtil.pickRandom(targets);
             }
 
             MoveContext context = new MoveContext(entity, target, this.entities);
