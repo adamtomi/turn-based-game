@@ -1,5 +1,6 @@
 package com.vamk.tbg.ui;
 
+import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.Game;
 import com.vamk.tbg.util.Awaitable;
@@ -11,21 +12,25 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ButtonContainer extends JPanel implements Tickable {
     private static ButtonContainer instance;
     private final Awaitable<Entity> entity;
     private final Game game;
-    private final Set<JButton> buttons;
+    private final Set<JButton> entityButtons;
+    private final List<JButton> moveButtons;
     private int moveIdx;
 
     public ButtonContainer(Game game) {
         this.game = game;
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
-        this.buttons = new HashSet<>();
+        this.entityButtons = new HashSet<>();
+        this.moveButtons = new ArrayList<>();
 
         setVisible(true);
         instance = this;
@@ -51,6 +56,7 @@ public class ButtonContainer extends JPanel implements Tickable {
 
             button.setVisible(true);
             add(button);
+            this.entityButtons.add(button);
         }
 
         JSeparator sep = new JSeparator();
@@ -69,7 +75,9 @@ public class ButtonContainer extends JPanel implements Tickable {
                 }
             });
 
+            button.setEnabled(false);
             button.setVisible(true);
+            this.moveButtons.add(button);
             add(button);
         }
 
@@ -77,6 +85,22 @@ public class ButtonContainer extends JPanel implements Tickable {
 
     public UserInput readUserInput() {
         return new UserInput(this.entity.await(), this.moveIdx);
+    }
+
+    public void updateButtonsFor(Entity entity) {
+        for (int i = 0; i < this.moveButtons.size(); i++) {
+            JButton button = this.moveButtons.get(i);
+            Move move = entity.getMoves().get(i);
+            button.setText(move.getId());
+        }
+    }
+
+    public void enableMoveButtons() {
+        this.moveButtons.forEach(btn -> btn.setEnabled(true));
+    }
+
+    public void disableMoveButtons() {
+        this.moveButtons.forEach(btn -> btn.setEnabled(false));
     }
 
     @Override

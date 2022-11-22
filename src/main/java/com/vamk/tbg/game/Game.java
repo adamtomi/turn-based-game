@@ -91,9 +91,12 @@ public class Game {
             Move move;
             Entity target;
             if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
+                ButtonContainer.getInstance().enableMoveButtons();
+                ButtonContainer.getInstance().updateButtonsFor(entity);
                 UserInput input = ButtonContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
                 target = input.target();
+                ButtonContainer.getInstance().disableMoveButtons();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
                 List<Entity> targets = this.entities.stream()
