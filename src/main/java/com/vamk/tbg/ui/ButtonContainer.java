@@ -13,15 +13,17 @@ import javax.swing.JSeparator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ButtonContainer extends JPanel implements Tickable {
     private static ButtonContainer instance;
     private final Awaitable<Entity> entity;
     private final Game game;
-    private final Set<JButton> entityButtons;
+    private final Map<Integer, JButton> entityButtons;
     private final List<JButton> moveButtons;
     private int moveIdx;
 
@@ -29,7 +31,7 @@ public class ButtonContainer extends JPanel implements Tickable {
         this.game = game;
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
-        this.entityButtons = new HashSet<>();
+        this.entityButtons = new HashMap<>();
         this.moveButtons = new ArrayList<>();
 
         setVisible(true);
@@ -56,7 +58,7 @@ public class ButtonContainer extends JPanel implements Tickable {
 
             button.setVisible(true);
             add(button);
-            this.entityButtons.add(button);
+            this.entityButtons.put(entity.getId(), button);
         }
 
         JSeparator sep = new JSeparator();
@@ -106,5 +108,15 @@ public class ButtonContainer extends JPanel implements Tickable {
     @Override
     public void tick() {
         this.moveIdx = 3;
+        Set<Integer> dead = this.entityButtons.keySet()
+                .stream()
+                .filter(x -> this.game.getEntities().stream().noneMatch($ -> $.getId() == x))
+                .collect(Collectors.toSet());
+        for (Integer i : dead) {
+            JButton button = this.entityButtons.get(i);
+            button.setVisible(false);
+            remove(button);
+            this.entityButtons.remove(i);
+        }
     }
 }

@@ -86,6 +86,7 @@ public class Game {
          * skipping their round.
          */
         entity.tick();
+        ButtonContainer.getInstance().tick();
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {
             Move move;
