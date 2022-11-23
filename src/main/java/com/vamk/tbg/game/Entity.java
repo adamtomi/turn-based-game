@@ -6,6 +6,7 @@ import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.util.LogUtil;
@@ -116,6 +117,7 @@ public class Entity implements Tickable {
 
     public void applyEffect(StatusEffect effect) {
         this.activeEffects.merge(effect, effect.getRounds(), (key, value) -> Math.min(value + 1, Constants.EFFECT_MAX_ROUNDS));
+        this.dispatcher.dispatch(new EffectsUpdatedSignal(this));
     }
 
     public boolean hasEffect(StatusEffect effect) {
@@ -133,6 +135,7 @@ public class Entity implements Tickable {
                 .collect(Collectors.toSet());
 
         negativeEffects.forEach(this.activeEffects::remove);
+        this.dispatcher.dispatch(new EffectsUpdatedSignal(this));
     }
 
     @Override
@@ -146,7 +149,10 @@ public class Entity implements Tickable {
             else entry.setValue(rounds);
         }
 
-        expired.forEach(this.activeEffects::remove);
+        if (!expired.isEmpty()) {
+            expired.forEach(this.activeEffects::remove);
+            this.dispatcher.dispatch(new EffectsUpdatedSignal(this));
+        }
     }
 
     @Override
