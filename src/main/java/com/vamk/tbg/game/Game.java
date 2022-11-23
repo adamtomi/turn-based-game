@@ -21,10 +21,12 @@ import java.util.logging.Logger;
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final SignalDispatcher dispatcher;
+    private final Entity.Factory entityFactory;
     private final List<Entity> entities;
 
     public Game(SignalDispatcher dispatcher) {
         this.dispatcher = dispatcher;
+        this.entityFactory = new Entity.Factory(dispatcher);
         this.entities = new ArrayList<>();
     }
 
@@ -36,7 +38,6 @@ public class Game {
 
     private void prepare() {
         LOGGER.info("Preparing game, spawning entities...");
-        int nextId = 0;
         // TODO read moves from config (entity presets?)
         List<Move> moves = List.of(
                 new BuffMove(),
@@ -48,15 +49,15 @@ public class Game {
         // TODO read i from config
         // TODO read maxHealth from config
         for (int i = 0; i < 3; i++) {
-            this.entities.add(new Entity(nextId++, false, 1000, moves));
-            this.entities.add(new Entity(nextId++, true, 1000, moves));
+            this.entities.add(this.entityFactory.create(false, 1000, moves));
+            this.entities.add(this.entityFactory.create(true, 1000, moves));
         }
 
         RandomUtil.randomize(this.entities);
         this.dispatcher.dispatch(new GameReadySignal(this.entities));
         LOGGER.info("Done!");
     }
-
+    
     private void gameLoop() {
         while (true) {
             LOGGER.info("=========== | Entering game cycle | ===========");

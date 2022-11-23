@@ -10,13 +10,18 @@ public final class LogUtil {
     private LogUtil() {}
 
     public static Logger getLogger(Class<?> clazz) {
-        Logger logger = Logger.getLogger(clazz.getSimpleName());
+        Logger logger = Logger.getLogger(className(clazz));
         logger.setUseParentHandlers(false);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(LogFormatter.INSTANCE);
         logger.addHandler(handler);
 
         return logger;
+    }
+
+    private static String className(Class<?> clazz) {
+        String[] path = clazz.getName().split("\\.");
+        return path[path.length - 1];
     }
 
     /* A simple log message formatter class */

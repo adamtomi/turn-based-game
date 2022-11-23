@@ -5,6 +5,8 @@ import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.Tickable;
 import com.vamk.tbg.util.Watchable;
 
@@ -13,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Entity implements Tickable {
@@ -23,13 +27,15 @@ public class Entity implements Tickable {
     private final int maxHealth;
     private final Watchable<Integer> health;
     private final List<Move> moves;
+    private final SignalDispatcher dispatcher;
 
-    public Entity(int id, boolean hostile, int maxHealth, List<Move> moves) {
+    public Entity(int id, boolean hostile, int maxHealth, List<Move> moves, SignalDispatcher dispatcher) {
         this.id = id;
         this.hostile = hostile;
         this.maxHealth = maxHealth;
         this.health = new Watchable<>(maxHealth);
         this.moves = moves;
+        this.dispatcher = dispatcher;
 
         this.activeEffects = new HashMap<>();
         this.tickables = Set.of(
@@ -128,7 +134,7 @@ public class Entity implements Tickable {
 
     @Override
     public String toString() {
-        return "Entity { id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health);
+        return "Entity { id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health.get());
     }
 
     @Override
@@ -144,5 +150,22 @@ public class Entity implements Tickable {
     @Override
     public int hashCode() {
         return 31 * this.id;
+    }
+
+    static final class Factory {
+        private static final Logger LOGGER = LogUtil.getLogger(Factory.class);
+        private final SignalDispatcher dispatcher;
+        private final AtomicInteger nextId;
+
+        Factory(SignalDispatcher dispatcher) {
+            this.dispatcher = dispatcher;
+            this.nextId = new AtomicInteger(0);
+        }
+
+        Entity create(boolean hostile, int maxHeath, List<Move> moves) {
+            Entity entity =  new Entity(this.nextId.getAndIncrement(), hostile, maxHeath, moves, this.dispatcher);
+            LOGGER.info("Created entity %s".formatted(entity));
+            return entity;
+        }
     }
 }

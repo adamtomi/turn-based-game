@@ -2,6 +2,7 @@ package com.vamk.tbg.util;
 
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class Watchable<T> {
     private T value;
     private BiConsumer<T, T> changeHandler;
