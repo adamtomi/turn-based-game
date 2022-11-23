@@ -70,7 +70,7 @@ public class Game {
         while (true) {
             LOGGER.info("Entering game cycle");
             /*
-             * Don't use Java's enhanced for loop, since this#cleanupDeadEntities
+             * Don't use Java's enhanced for loop, since the entity death listener
              * might remove elements from the list while the iteration is happening,
              * which would lead to concurrent modifications.
              */
