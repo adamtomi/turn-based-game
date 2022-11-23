@@ -1,7 +1,9 @@
 package com.vamk.tbg.ui;
 
 import com.vamk.tbg.game.Entity;
-import com.vamk.tbg.game.Game;
+import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityPlaysSignal;
+import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.util.Tickable;
 
 import javax.swing.JPanel;
@@ -11,21 +13,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TableContainer extends JPanel implements Tickable {
-    private static TableContainer instance;
-    private final Game game;
 
-    public TableContainer(Game game) {
-        this.game = game;
+    public TableContainer(SignalDispatcher dispatcher) {
+        dispatcher.subscribe(GameReadySignal.class, this::onGameReady);
+        dispatcher.subscribe(EntityPlaysSignal.class, x -> tick());
         setVisible(true);
-
-        instance = this;
     }
 
-    public void init() {
+    private void onGameReady(GameReadySignal signal) {
         String[] columns = { "Entity ID", "Health", "Hostile", "Effects" };
         String[][] data = new String[6][4];
 
-        List<Entity> entities = this.game.getEntities();
+        List<Entity> entities = signal.getEntities();
         for (int i = 0; i < 6; i++) {
             Entity entity = entities.get(i);
             data[i][0] = String.valueOf(entity.getId());
@@ -47,12 +46,6 @@ public class TableContainer extends JPanel implements Tickable {
 
         JScrollPane sp = new JScrollPane(table);
         add(sp);
-    }
-
-    public static TableContainer getInstance() {
-        if (instance == null) throw new IllegalStateException("Instance has not yet been initialized");
-
-        return instance;
     }
 
     @Override

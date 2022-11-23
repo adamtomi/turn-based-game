@@ -3,6 +3,9 @@ package com.vamk.tbg.ui;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.Game;
+import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityPlaysSignal;
+import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.util.Awaitable;
 import com.vamk.tbg.util.Tickable;
 import com.vamk.tbg.util.UserInput;
@@ -23,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GameContainer extends JPanel implements Tickable {
+    // TODO remove static instance
     private static GameContainer instance;
     private final Awaitable<Entity> entity;
     private final Game game;
@@ -30,8 +34,10 @@ public class GameContainer extends JPanel implements Tickable {
     private final List<JButton> moveButtons;
     private int moveIdx;
 
-    public GameContainer(Game game) {
+    public GameContainer(Game game, SignalDispatcher dispatcher) {
         this.game = game;
+        dispatcher.subscribe(GameReadySignal.class, this::onGameReady);
+        dispatcher.subscribe(EntityPlaysSignal.class, this::onEntityPlays);
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
@@ -42,14 +48,8 @@ public class GameContainer extends JPanel implements Tickable {
         instance = this;
     }
 
-    public static GameContainer getInstance() {
-        if (instance == null) throw new IllegalStateException("Instance was not yet set");
-
-        return instance;
-    }
-
-    public void init() {
-        for (Entity entity : this.game.getEntities()) {
+    private void onGameReady(GameReadySignal signal) {
+        for (Entity entity : signal.getEntities()) {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
             button.setPreferredSize(new Dimension(100, 50));
 
@@ -87,8 +87,18 @@ public class GameContainer extends JPanel implements Tickable {
         }
     }
 
-    public UserInput readUserInput() {
-        return new UserInput(this.entity.await(), this.moveIdx);
+    private void onEntityPlays(EntityPlaysSignal signal) {
+        tick();
+        updateButtonsFor(signal.getEntity());
+        if (signal.isUserControlled()) enableMoveButtons();
+        else disableMoveButtons();
+    }
+
+    // TODO remove this method
+    public static GameContainer getInstance() {
+        if (instance == null) throw new IllegalStateException("Instance was not yet set");
+
+        return instance;
     }
 
     public void updateButtonsFor(Entity entity) {
@@ -105,6 +115,10 @@ public class GameContainer extends JPanel implements Tickable {
 
     public void disableMoveButtons() {
         this.moveButtons.forEach(btn -> btn.setEnabled(false));
+    }
+
+    public UserInput readUserInput() {
+        return new UserInput(this.entity.await(), this.moveIdx);
     }
 
     @Override

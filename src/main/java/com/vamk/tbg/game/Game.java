@@ -6,8 +6,10 @@ import com.vamk.tbg.combat.GenericAttackMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityPlaysSignal;
+import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.ui.GameContainer;
-import com.vamk.tbg.ui.TableContainer;
 import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.UserInput;
@@ -18,16 +20,16 @@ import java.util.logging.Logger;
 
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
+    private final SignalDispatcher dispatcher;
     private final List<Entity> entities;
 
-    public Game() {
+    public Game(SignalDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
         this.entities = new ArrayList<>();
     }
 
     public void launch() {
         prepare();
-        GameContainer.getInstance().init();
-        TableContainer.getInstance().init();
         gameLoop();
         LOGGER.info("Shutting down, thank you :)");
     }
@@ -51,6 +53,7 @@ public class Game {
         }
 
         RandomUtil.randomize(this.entities);
+        this.dispatcher.dispatch(new GameReadySignal(this.entities));
         LOGGER.info("Done!");
     }
 
@@ -88,19 +91,21 @@ public class Game {
          * skipping their round.
          */
         entity.tick();
-        GameContainer.getInstance().tick();
-        TableContainer.getInstance().tick();
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {
             Move move;
             Entity target;
-            if (!entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED)) {
-                GameContainer.getInstance().enableMoveButtons();
-                GameContainer.getInstance().updateButtonsFor(entity);
+            /*
+             * User can control this entity, if it's not confused (if it is, the computer will take over)
+             * and it's not hostile.
+             */
+            boolean userControlled = !entity.isHostile() && !entity.hasEffect(StatusEffect.CONFUSED);
+            this.dispatcher.dispatch(new EntityPlaysSignal(entity, userControlled));
+
+            if (userControlled) {
                 UserInput input = GameContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
                 target = input.target();
-                GameContainer.getInstance().disableMoveButtons();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
                 List<Entity> targets = this.entities.stream()
