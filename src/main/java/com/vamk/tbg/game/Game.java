@@ -7,6 +7,7 @@ import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.ui.GameContainer;
@@ -38,6 +39,7 @@ public class Game {
 
     private void prepare() {
         LOGGER.info("Preparing game, spawning entities...");
+        this.dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
         // TODO read moves from config (entity presets?)
         List<Move> moves = List.of(
                 new BuffMove(),
@@ -57,6 +59,12 @@ public class Game {
         this.dispatcher.dispatch(new GameReadySignal(this.entities));
         LOGGER.info("Done!");
     }
+
+    private void onEntityDeath(EntityDeathSignal signal) {
+        Entity dead = signal.getEntity();
+        LOGGER.info("Entity %d died, removing it from the board...".formatted(dead.getId()));
+        this.entities.remove(dead);
+    }
     
     private void gameLoop() {
         while (true) {
@@ -72,7 +80,6 @@ public class Game {
                 Entity entity = this.entities.get(i);
                 LOGGER.info("----------- | Entity %d is playing | -----------".formatted(entity.getId()));
                 play(entity);
-                cleanupDeadEntities();
                 LOGGER.info("-----------------------------------------------");
             }
 
@@ -131,16 +138,5 @@ public class Game {
         LOGGER.info("== Current entity info ==");
         this.entities.forEach(entity -> LOGGER.info("ID: %d | Health: %d | Effects: %s | Hostile: %b"
                 .formatted(entity.getId(), entity.getHealth().get(), entity.getEffects(), entity.isHostile())));
-    }
-
-    private void cleanupDeadEntities() {
-        int entities = this.entities.size();
-        this.entities.removeIf(Entity::isDead);
-        int diff = entities - this.entities.size();
-        if (diff > 0) LOGGER.info("Removed %d dead entities from the board".formatted(diff));
-    }
-
-    public List<Entity> getEntities() {
-        return List.copyOf(this.entities);
     }
 }

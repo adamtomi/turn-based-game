@@ -2,8 +2,8 @@ package com.vamk.tbg.ui;
 
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.game.Entity;
-import com.vamk.tbg.game.Game;
 import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.util.Awaitable;
@@ -22,26 +22,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GameContainer extends JPanel implements Tickable {
     // TODO remove static instance
     private static GameContainer instance;
     private final Awaitable<Entity> entity;
-    private final Game game;
     private final Map<Integer, JButton> entityButtons;
     private final List<JButton> moveButtons;
     private int moveIdx;
 
-    public GameContainer(Game game, SignalDispatcher dispatcher) {
-        this.game = game;
-        dispatcher.subscribe(GameReadySignal.class, this::onGameReady);
-        dispatcher.subscribe(EntityPlaysSignal.class, this::onEntityPlays);
+    public GameContainer(SignalDispatcher dispatcher) {
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
         this.moveButtons = new ArrayList<>();
+
+        dispatcher.subscribe(GameReadySignal.class, this::onGameReady);
+        dispatcher.subscribe(EntityPlaysSignal.class, this::onEntityPlays);
+        dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
 
         setVisible(true);
         setLayout(new GridLayout(2, 6));
@@ -94,6 +92,14 @@ public class GameContainer extends JPanel implements Tickable {
         else disableMoveButtons();
     }
 
+    private void onEntityDeath(EntityDeathSignal signal) {
+        Entity entity = signal.getEntity();
+        JButton button = this.entityButtons.remove(entity.getId());
+        if (button == null) return;
+
+        button.setEnabled(false);
+    }
+
     // TODO remove this method
     public static GameContainer getInstance() {
         if (instance == null) throw new IllegalStateException("Instance was not yet set");
@@ -124,18 +130,6 @@ public class GameContainer extends JPanel implements Tickable {
     @Override
     public void tick() {
         this.moveIdx = 3;
-        Set<Integer> dead = this.entityButtons.keySet()
-                .stream()
-                .filter(x -> this.game.getEntities().stream().noneMatch($ -> $.getId() == x))
-                .collect(Collectors.toSet());
-        for (Integer i : dead) {
-            JButton button = this.entityButtons.get(i);
-            button.setEnabled(false);
-            // button.setVisible(false);
-            // remove(button);
-            this.entityButtons.remove(i);
-        }
-
         updateUI();
     }
 }

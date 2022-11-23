@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         SignalDispatcher dispatcher = new SignalDispatcher();
         Game game = new Game(dispatcher);
-        new MainContainer(game, dispatcher);
+        new MainContainer(dispatcher);
         game.launch();
         System.exit(0);
     }

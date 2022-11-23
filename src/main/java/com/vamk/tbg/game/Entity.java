@@ -6,6 +6,7 @@ import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.Tickable;
 import com.vamk.tbg.util.Watchable;
@@ -79,6 +80,7 @@ public class Entity implements Tickable {
 
     public void damage(int dmg) {
         this.health.set(Math.max(0, this.health.get() - dmg));
+        if (this.health.get() <= 0) this.dispatcher.dispatch(new EntityDeathSignal(this));
     }
 
     public void heal(int hp) {
