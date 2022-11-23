@@ -83,7 +83,6 @@ public class Game {
                 LOGGER.info("-----------------------------------------------");
             }
 
-            printEntities();
             LOGGER.info("===============================================");
         }
     }
@@ -131,12 +130,5 @@ public class Game {
 
         // CAFFEINATED grants another turn
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
-    }
-
-    // TODO This method will be removed later (once the GUI part is up and running)
-    private void printEntities() {
-        LOGGER.info("== Current entity info ==");
-        this.entities.forEach(entity -> LOGGER.info("ID: %d | Health: %d | Effects: %s | Hostile: %b"
-                .formatted(entity.getId(), entity.getHealth(), entity.getEffects(), entity.isHostile())));
     }
 }
