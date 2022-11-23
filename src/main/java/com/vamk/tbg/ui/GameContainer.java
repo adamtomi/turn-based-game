@@ -16,8 +16,6 @@ import javax.swing.JSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,12 +49,7 @@ public class GameContainer extends JPanel implements Tickable {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
             button.setPreferredSize(new Dimension(100, 50));
 
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    GameContainer.this.entity.complete(entity);
-                }
-            });
+            button.addActionListener(event -> GameContainer.this.entity.complete(entity));
 
             button.setVisible(true);
             add(button, BorderLayout.PAGE_START);
@@ -71,12 +64,7 @@ public class GameContainer extends JPanel implements Tickable {
             button.setSize(100, 50);
 
             int finalI = i;
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    GameContainer.this.moveIdx = finalI;
-                }
-            });
+            button.addActionListener(e -> GameContainer.this.moveIdx = finalI);
 
             button.setEnabled(false);
             button.setVisible(true);
