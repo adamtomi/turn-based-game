@@ -7,9 +7,9 @@ import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
+import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.Tickable;
-import com.vamk.tbg.util.Watchable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ public class Entity implements Tickable {
     private final int id;
     private final boolean hostile;
     private final int maxHealth;
-    private final Watchable<Integer> health;
+    private int health;
     private final List<Move> moves;
     private final SignalDispatcher dispatcher;
 
@@ -34,7 +34,7 @@ public class Entity implements Tickable {
         this.id = id;
         this.hostile = hostile;
         this.maxHealth = maxHealth;
-        this.health = new Watchable<>(maxHealth);
+        this.health = maxHealth;
         this.moves = moves;
         this.dispatcher = dispatcher;
 
@@ -74,25 +74,40 @@ public class Entity implements Tickable {
         return this.maxHealth;
     }
 
-    public Watchable<Integer> getHealth() {
+    public int getHealth() {
         return this.health;
     }
 
     public void damage(int dmg) {
-        this.health.set(Math.max(0, this.health.get() - dmg));
-        if (this.health.get() <= 0) this.dispatcher.dispatch(new EntityDeathSignal(this));
+        updateHealth(Math.max(0, this.health - dmg));
+        if (this.health <= 0) this.dispatcher.dispatch(new EntityDeathSignal(this));
     }
 
     public void heal(int hp) {
-        this.health.set(Math.min(this.health.get() + hp, this.maxHealth));
+        updateHealth(Math.min(this.health + hp, this.maxHealth));
     }
 
     public void heal() {
-        this.health.set(this.maxHealth);
+        updateHealth(this.maxHealth);
+    }
+
+    /**
+     * This function is used by all public functions
+     * that modify the entity's health. The reason for
+     * that is that this will not only change the health
+     * to the new value, but once that's done, it'll fire
+     * a {@link EntityHealthChangedSignal} signal, so that
+     * listeners (mainly UI related) can perform
+     * necessary actions.
+     */
+    private void updateHealth(int health) {
+        int previous = this.health;
+        this.health = health;
+        this.dispatcher.dispatch(new EntityHealthChangedSignal(this, previous));
     }
 
     public boolean isDead() {
-        return this.health.get() <= 0;
+        return this.health <= 0;
     }
 
     public List<Move> getMoves() {
@@ -136,7 +151,7 @@ public class Entity implements Tickable {
 
     @Override
     public String toString() {
-        return "Entity { id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health.get());
+        return "Entity { id=%d, hostile=%b, health=%d }".formatted(this.id, this.hostile, this.health);
     }
 
     @Override

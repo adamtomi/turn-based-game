@@ -2,6 +2,7 @@ package com.vamk.tbg.ui;
 
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.util.Tickable;
@@ -13,8 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TableContainer extends JPanel implements Tickable {
+    private final SignalDispatcher dispatcher;
 
     public TableContainer(SignalDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
         dispatcher.subscribe(GameReadySignal.class, this::onGameReady);
         dispatcher.subscribe(EntityPlaysSignal.class, x -> tick());
         setVisible(true);
@@ -28,7 +31,7 @@ public class TableContainer extends JPanel implements Tickable {
         for (int i = 0; i < 6; i++) {
             Entity entity = entities.get(i);
             data[i][0] = String.valueOf(entity.getId());
-            data[i][1] = String.valueOf(entity.getHealth().get());
+            data[i][1] = String.valueOf(entity.getHealth());
             data[i][2] = entity.isHostile() ? "Yes" : "No";
             data[i][3] = entity.getEffects().entrySet()
                     .stream()
@@ -37,7 +40,7 @@ public class TableContainer extends JPanel implements Tickable {
 
             int finalI = i;
             // Make sure to update the table
-            entity.getHealth().watch((o, n) -> data[finalI][1] = String.valueOf(entity.getHealth().get()));
+            this.dispatcher.subscribe(EntityHealthChangedSignal.class, x -> data[finalI][1] = String.valueOf(entity.getHealth()));
         }
 
         JTable table = new JTable(data, columns);

@@ -137,6 +137,6 @@ public class Game {
     private void printEntities() {
         LOGGER.info("== Current entity info ==");
         this.entities.forEach(entity -> LOGGER.info("ID: %d | Health: %d | Effects: %s | Hostile: %b"
-                .formatted(entity.getId(), entity.getHealth().get(), entity.getEffects(), entity.isHostile())));
+                .formatted(entity.getId(), entity.getHealth(), entity.getEffects(), entity.isHostile())));
     }
 }
