@@ -7,6 +7,7 @@ import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.ui.GameContainer;
+import com.vamk.tbg.ui.TableContainer;
 import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.UserInput;
@@ -26,6 +27,7 @@ public class Game {
     public void launch() {
         prepare();
         GameContainer.getInstance().init();
+        TableContainer.getInstance().init();
         gameLoop();
         LOGGER.info("Shutting down, thank you :)");
     }
@@ -87,6 +89,7 @@ public class Game {
          */
         entity.tick();
         GameContainer.getInstance().tick();
+        TableContainer.getInstance().tick();
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {
             Move move;

@@ -9,9 +9,7 @@ import com.vamk.tbg.util.UserInput;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -87,35 +85,6 @@ public class GameContainer extends JPanel implements Tickable {
             this.moveButtons.add(button);
             add(button);
         }
-
-        JSeparator sep1 = new JSeparator();
-        add(sep1);
-
-        String[] columns = { "Entity ID", "Health", "Hostile", "Effects" };
-        String[][] data = new String[6][4];
-
-        List<Entity> entities = this.game.getEntities();
-        for (int i = 0; i < 6; i++) {
-            Entity entity = entities.get(i);
-            data[i][0] = String.valueOf(entity.getId());
-            data[i][1] = String.valueOf(entity.getHealth().get());
-            data[i][2] = entity.isHostile() ? "Yes" : "No";
-            data[i][3] = entity.getEffects().entrySet()
-                    .stream()
-                    .map(x -> "%s-%d".formatted(x.getKey().name(), x.getValue()))
-                    .collect(Collectors.joining(", "));
-
-            int finalI = i;
-            // Make sure to update the table
-            entity.getHealth().watch((o, n) -> data[finalI][1] = String.valueOf(entity.getHealth().get()));
-        }
-
-        JTable table = new JTable(data, columns);
-        table.setBounds(30, 40, 200, 300);
-        table.setSize(300, 400);
-
-        JScrollPane sp = new JScrollPane(table);
-        add(sp);
     }
 
     public UserInput readUserInput() {
@@ -147,8 +116,9 @@ public class GameContainer extends JPanel implements Tickable {
                 .collect(Collectors.toSet());
         for (Integer i : dead) {
             JButton button = this.entityButtons.get(i);
-            button.setVisible(false);
-            remove(button);
+            button.setEnabled(false);
+            // button.setVisible(false);
+            // remove(button);
             this.entityButtons.remove(i);
         }
 
