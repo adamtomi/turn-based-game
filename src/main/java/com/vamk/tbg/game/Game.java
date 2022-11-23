@@ -68,7 +68,7 @@ public class Game {
     
     private void gameLoop() {
         while (true) {
-            LOGGER.info("=========== | Entering game cycle | ===========");
+            LOGGER.info("Entering game cycle");
             /*
              * Don't use Java's enhanced for loop, since this#cleanupDeadEntities
              * might remove elements from the list while the iteration is happening,
@@ -78,12 +78,9 @@ public class Game {
                 if (!shouldContinue()) return;
 
                 Entity entity = this.entities.get(i);
-                LOGGER.info("----------- | Entity %d is playing | -----------".formatted(entity.getId()));
+                LOGGER.info("Entity %d is playing".formatted(entity.getId()));
                 play(entity);
-                LOGGER.info("-----------------------------------------------");
             }
-
-            LOGGER.info("===============================================");
         }
     }
 
