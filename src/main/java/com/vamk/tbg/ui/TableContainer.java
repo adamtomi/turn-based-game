@@ -1,16 +1,19 @@
 package com.vamk.tbg.ui;
 
+import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.SignalDispatcher;
+import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
 import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.util.Tickable;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import java.awt.Dimension;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TableContainer extends JPanel implements Tickable {
@@ -33,22 +36,30 @@ public class TableContainer extends JPanel implements Tickable {
             data[i][0] = String.valueOf(entity.getId());
             data[i][1] = String.valueOf(entity.getHealth());
             data[i][2] = entity.isHostile() ? "Yes" : "No";
-            data[i][3] = entity.getEffects().entrySet()
-                    .stream()
-                    .map(x -> "%s-%d".formatted(x.getKey().name(), x.getValue()))
-                    .collect(Collectors.joining(", "));
+            data[i][3] = getEffectsEntry(entity);
 
             int finalI = i;
             // Make sure to update the table
             this.dispatcher.subscribe(EntityHealthChangedSignal.class, x -> data[finalI][1] = String.valueOf(entity.getHealth()));
+            this.dispatcher.subscribe(EffectsUpdatedSignal.class, x -> data[finalI][3] = getEffectsEntry(entity));
         }
 
         JTable table = new JTable(data, columns);
-        table.setBounds(30, 40, 200, 300);
-        table.setSize(300, 400);
+        table.getColumn("Effects").setMinWidth(500);
+        table.setPreferredSize(new Dimension(1500, 500));
+        table.setRowSelectionAllowed(false);
+        add(table);
+        table.setVisible(true);
+    }
 
-        JScrollPane sp = new JScrollPane(table);
-        add(sp);
+    private String getEffectsEntry(Entity entity) {
+        Map<StatusEffect, Integer> effects = entity.getEffects();
+        if (effects.isEmpty()) return "-";
+
+        return entity.getEffects().entrySet()
+                .stream()
+                .map(x -> "%s-%d".formatted(x.getKey().name(), x.getValue()))
+                .collect(Collectors.joining(", "));
     }
 
     @Override
