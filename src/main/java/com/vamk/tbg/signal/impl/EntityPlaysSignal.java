@@ -4,7 +4,7 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
 public class EntityPlaysSignal implements Signal {
-    private static final String ID = "ENTITY_PLAYS_SIGNAL";
+    private static final String ID = "ENTITY_PLAYS";
     private final Entity entity;
     private final boolean userControlled;
 
