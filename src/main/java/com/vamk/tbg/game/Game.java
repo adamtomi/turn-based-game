@@ -10,7 +10,7 @@ import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
-import com.vamk.tbg.ui.GameContainer;
+import com.vamk.tbg.ui.ButtontContainer;
 import com.vamk.tbg.util.Cursor;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
@@ -25,6 +25,7 @@ public class Game {
     private final SignalDispatcher dispatcher;
     private final Entity.Factory entityFactory;
     private final List<Entity> entities;
+    private Cursor<Entity> cursor;
 
     public Game(SignalDispatcher dispatcher) {
         this.dispatcher = dispatcher;
@@ -57,6 +58,7 @@ public class Game {
         }
 
         RandomUtil.randomize(this.entities);
+        this.cursor = new Cursor<>(this.entities);
         this.dispatcher.dispatch(new GameReadySignal(this.entities));
         LOGGER.info("Done!");
     }
@@ -68,17 +70,11 @@ public class Game {
     }
     
     private void gameLoop() {
-        Cursor<Entity> cursor = new Cursor<>(this.entities);
-        while (shouldContinue()) {
-            Entity entity = cursor.advance();
+        while (!isFinished()) {
+            Entity entity = this.cursor.advance();
             LOGGER.info("Entity %d is playing".formatted(entity.getId()));
             play(entity);
         }
-    }
-
-    private boolean shouldContinue() {
-        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
-        return hostiles > 0 && this.entities.size() - hostiles > 0;
     }
 
     private void play(Entity entity) {
@@ -99,7 +95,7 @@ public class Game {
             this.dispatcher.dispatch(new EntityPlaysSignal(entity, userControlled));
 
             if (userControlled) {
-                UserInput input = GameContainer.getInstance().readUserInput();
+                UserInput input = ButtontContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
                 target = input.target();
             } else {
@@ -119,5 +115,14 @@ public class Game {
 
         // CAFFEINATED grants another turn
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
+    }
+
+    public boolean isFinished() {
+        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
+        return !(hostiles > 0 && this.entities.size() - hostiles > 0);
+    }
+
+    public GameState exportState() {
+        return new GameState(this.entities, this.cursor.getInternalCursor());
     }
 }

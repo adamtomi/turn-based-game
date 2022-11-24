@@ -5,6 +5,7 @@ import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.effect.StatusEffectHandler;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
@@ -12,6 +13,8 @@ import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.Tickable;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,15 +24,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class Entity implements Tickable {
+public class Entity implements Serializable, Tickable {
+    @Serial
+    private static final long serialVersionUID = 6101117327941388691L;
     private final Map<StatusEffect, Integer> activeEffects;
-    private final Set<Tickable> tickables;
+    private final transient Set<StatusEffectHandler> effectHandlers;
     private final int id;
     private final boolean hostile;
     private final int maxHealth;
     private int health;
     private final List<Move> moves;
-    private final SignalDispatcher dispatcher;
+    private final transient SignalDispatcher dispatcher;
 
     public Entity(int id, boolean hostile, int maxHealth, List<Move> moves, SignalDispatcher dispatcher) {
         this.id = id;
@@ -40,7 +45,7 @@ public class Entity implements Tickable {
         this.dispatcher = dispatcher;
 
         this.activeEffects = new HashMap<>();
-        this.tickables = Set.of(
+        this.effectHandlers = Set.of(
                 new BleedingEffectHandler(this),
                 new RegenEffectHandler(this)
         );
@@ -140,7 +145,7 @@ public class Entity implements Tickable {
 
     @Override
     public void tick() {
-        this.tickables.forEach(Tickable::tick);
+        this.effectHandlers.forEach(Tickable::tick);
         Set<StatusEffect> expired = new HashSet<>();
         for (Map.Entry<StatusEffect, Integer> entry : this.activeEffects.entrySet()) {
             int rounds = entry.getValue() - 1;

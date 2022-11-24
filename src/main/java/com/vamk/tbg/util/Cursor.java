@@ -34,4 +34,11 @@ public class Cursor<T> {
 
         return this.elements.get(this.cursor);
     }
+
+    /**
+     * Returns the internal cursor.
+     */
+    public int getInternalCursor() {
+        return this.cursor;
+    }
 }

@@ -5,10 +5,13 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 public class CureMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(CureMove.class);
+    @Serial
+    private static final long serialVersionUID = 4985779855365158332L;
 
     public CureMove() {
         super("MOVE", false);

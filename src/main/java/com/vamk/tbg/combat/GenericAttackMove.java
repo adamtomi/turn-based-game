@@ -5,12 +5,15 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import java.io.Serial;
 import java.util.Random;
 import java.util.logging.Logger;
 
 public class GenericAttackMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(GenericAttackMove.class);
-    private final Random random;
+    @Serial
+    private static final long serialVersionUID = 7741676913360830574L;
+    private final transient Random random;
 
     public GenericAttackMove() {
         super("GENERIC_ATTACK", true);

@@ -4,10 +4,13 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 public class HealAllMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealAllMove.class);
+    @Serial
+    private static final long serialVersionUID = -1552305301295494669L;
 
     public HealAllMove() {
         super("HEAL_ALL", false);
