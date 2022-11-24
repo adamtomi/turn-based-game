@@ -20,7 +20,7 @@ public final class IOUtil {
     public static <O extends Serializable> O readObject(Class<O> type, String path) throws ClassNotFoundException, IOException {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))) {
             Object result = in.readObject();
-            if (!type.isInstance(type)) throw new IllegalStateException("Object %s is not of type %s".formatted(result, type.getName()));
+            if (!type.isInstance(result)) throw new IllegalStateException("Object %s is not of type %s".formatted(result, type.getName()));
 
             return type.cast(result);
         }
