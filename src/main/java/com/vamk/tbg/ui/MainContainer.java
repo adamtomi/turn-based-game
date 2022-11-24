@@ -18,6 +18,7 @@ public class MainContainer extends JFrame {
         this.entityLabel.setVerticalAlignment(JLabel.CENTER);
 
         setFocusable(true);
+        setTitle("Turn Based Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 500);
         setLayout(new GridLayout(3,  1));
