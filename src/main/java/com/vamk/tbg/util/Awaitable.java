@@ -1,26 +1,33 @@
 package com.vamk.tbg.util;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 public class Awaitable<T> {
-    private CompletableFuture<T> future;
+    private CountDownLatch latch;
+    private T value;
 
     public Awaitable() {
-        this.future = new CompletableFuture<>();
-    }
-
-    public void complete(T value) {
-        this.future.complete(value);
+        reset();
     }
 
     public T await() {
         try {
-            // Await this future. Once this#complete is called (which completes this future)
-            // this function will proceed
-            return this.future.join();
+            this.latch.await();
+            return this.value;
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
         } finally {
-            // Reset internal state
-            this.future = new CompletableFuture<>();
+            reset();
         }
+    }
+
+    public void complete(T value) {
+        this.value = value;
+        this.latch.countDown();
+    }
+
+    private void reset() {
+        this.latch = new CountDownLatch(1);
+        this.value = null;
     }
 }
