@@ -11,8 +11,8 @@ import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.ui.GameContainer;
-import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.LogUtil;
+import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.UserInput;
 
 import java.util.ArrayList;
