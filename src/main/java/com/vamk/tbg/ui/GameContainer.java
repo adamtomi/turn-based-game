@@ -40,7 +40,7 @@ public class GameContainer extends JPanel implements Tickable {
         dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
 
         setVisible(true);
-        setLayout(new GridLayout(2, 6));
+        setLayout(new GridLayout(2, 6, 20, 20));
         instance = this;
     }
 
@@ -57,6 +57,7 @@ public class GameContainer extends JPanel implements Tickable {
         }
 
         JSeparator sep = new JSeparator();
+        sep.setVisible(false);
         add(sep);
 
         for (int i = 0; i < 4; i++) {
