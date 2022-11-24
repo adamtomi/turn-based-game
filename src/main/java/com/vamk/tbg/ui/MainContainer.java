@@ -26,11 +26,11 @@ public class MainContainer extends JFrame {
         add(new JSeparator());
         add(this.entityLabel);
         add(new JSeparator());
-        add(new TableContainer(dispatcher));
+        add(new EntityDataContainer(dispatcher));
         setVisible(true);
         dispatcher.subscribe(EntityPlaysSignal.class, this::onEntityPlays);
     }
-    
+
     private void onEntityPlays(EntityPlaysSignal signal) {
         this.entityLabel.setText("Currently playing: Entity %d".formatted(signal.getEntity().getId()));
     }
