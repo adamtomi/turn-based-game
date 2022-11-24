@@ -11,6 +11,7 @@ import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.ui.GameContainer;
+import com.vamk.tbg.util.Cursor;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
 import com.vamk.tbg.util.UserInput;
@@ -67,20 +68,11 @@ public class Game {
     }
     
     private void gameLoop() {
-        while (true) {
-            LOGGER.info("Entering game cycle");
-            /*
-             * Don't use Java's enhanced for loop, since the entity death listener
-             * might remove elements from the list while the iteration is happening,
-             * which would lead to concurrent modifications.
-             */
-            for (int i = 0; i < this.entities.size(); i++) {
-                if (!shouldContinue()) return;
-
-                Entity entity = this.entities.get(i);
-                LOGGER.info("Entity %d is playing".formatted(entity.getId()));
-                play(entity);
-            }
+        Cursor<Entity> cursor = new Cursor<>(this.entities);
+        while (shouldContinue()) {
+            Entity entity = cursor.advance();
+            LOGGER.info("Entity %d is playing".formatted(entity.getId()));
+            play(entity);
         }
     }
 
