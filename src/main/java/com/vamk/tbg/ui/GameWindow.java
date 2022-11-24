@@ -28,7 +28,7 @@ public class GameWindow extends JFrame implements WindowListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 500);
         setLayout(new GridLayout(3,  1));
-        add(new ButtontContainer(dispatcher));
+        add(new ButtonContainer(dispatcher));
         add(this.entityLabel);
         add(new EntityDataContainer(dispatcher));
         setVisible(true);

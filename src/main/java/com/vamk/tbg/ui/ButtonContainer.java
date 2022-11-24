@@ -21,15 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ButtontContainer extends JPanel implements Tickable {
+public class ButtonContainer extends JPanel implements Tickable {
     // TODO remove static instance
-    private static ButtontContainer instance;
+    private static ButtonContainer instance;
     private final Awaitable<Entity> entity;
     private final Map<Integer, JButton> entityButtons;
     private final List<JButton> moveButtons;
     private int moveIdx;
 
-    public ButtontContainer(SignalDispatcher dispatcher) {
+    public ButtonContainer(SignalDispatcher dispatcher) {
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
@@ -49,7 +49,7 @@ public class ButtontContainer extends JPanel implements Tickable {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
             button.setPreferredSize(new Dimension(100, 50));
 
-            button.addActionListener(event -> ButtontContainer.this.entity.complete(entity));
+            button.addActionListener(event -> ButtonContainer.this.entity.complete(entity));
 
             button.setVisible(true);
             add(button, BorderLayout.PAGE_START);
@@ -65,7 +65,7 @@ public class ButtontContainer extends JPanel implements Tickable {
             button.setSize(100, 50);
 
             int finalI = i;
-            button.addActionListener(e -> ButtontContainer.this.moveIdx = finalI);
+            button.addActionListener(e -> ButtonContainer.this.moveIdx = finalI);
 
             button.setEnabled(false);
             button.setVisible(true);
@@ -90,7 +90,7 @@ public class ButtontContainer extends JPanel implements Tickable {
     }
 
     // TODO remove this method
-    public static ButtontContainer getInstance() {
+    public static ButtonContainer getInstance() {
         if (instance == null) throw new IllegalStateException("Instance was not yet set");
 
         return instance;

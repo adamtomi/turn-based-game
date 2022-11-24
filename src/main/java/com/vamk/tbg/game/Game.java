@@ -10,7 +10,7 @@ import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
-import com.vamk.tbg.ui.ButtontContainer;
+import com.vamk.tbg.ui.ButtonContainer;
 import com.vamk.tbg.util.Cursor;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
@@ -95,7 +95,7 @@ public class Game {
             this.dispatcher.dispatch(new EntityPlaysSignal(entity, userControlled));
 
             if (userControlled) {
-                UserInput input = ButtontContainer.getInstance().readUserInput();
+                UserInput input = ButtonContainer.getInstance().readUserInput();
                 move = entity.getMoves().get(input.moveIndex());
                 target = input.target();
             } else {
