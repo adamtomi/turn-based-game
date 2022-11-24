@@ -21,15 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameContainer extends JPanel implements Tickable {
+public class ButtontContainer extends JPanel implements Tickable {
     // TODO remove static instance
-    private static GameContainer instance;
+    private static ButtontContainer instance;
     private final Awaitable<Entity> entity;
     private final Map<Integer, JButton> entityButtons;
     private final List<JButton> moveButtons;
     private int moveIdx;
 
-    public GameContainer(SignalDispatcher dispatcher) {
+    public ButtontContainer(SignalDispatcher dispatcher) {
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
@@ -49,7 +49,7 @@ public class GameContainer extends JPanel implements Tickable {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
             button.setPreferredSize(new Dimension(100, 50));
 
-            button.addActionListener(event -> GameContainer.this.entity.complete(entity));
+            button.addActionListener(event -> ButtontContainer.this.entity.complete(entity));
 
             button.setVisible(true);
             add(button, BorderLayout.PAGE_START);
@@ -65,7 +65,7 @@ public class GameContainer extends JPanel implements Tickable {
             button.setSize(100, 50);
 
             int finalI = i;
-            button.addActionListener(e -> GameContainer.this.moveIdx = finalI);
+            button.addActionListener(e -> ButtontContainer.this.moveIdx = finalI);
 
             button.setEnabled(false);
             button.setVisible(true);
@@ -90,7 +90,7 @@ public class GameContainer extends JPanel implements Tickable {
     }
 
     // TODO remove this method
-    public static GameContainer getInstance() {
+    public static ButtontContainer getInstance() {
         if (instance == null) throw new IllegalStateException("Instance was not yet set");
 
         return instance;

@@ -2,15 +2,15 @@ package com.vamk.tbg;
 
 import com.vamk.tbg.game.Game;
 import com.vamk.tbg.signal.SignalDispatcher;
-import com.vamk.tbg.ui.MainContainer;
+import com.vamk.tbg.ui.GameWindow;
 
 public class Main {
 
     public static void main(String[] args) {
         SignalDispatcher dispatcher = new SignalDispatcher();
+        GameWindow container = new GameWindow(dispatcher);
         Game game = new Game(dispatcher);
-        new MainContainer(dispatcher);
         game.launch();
-        System.exit(0);
+        container.dispose();
     }
 }
