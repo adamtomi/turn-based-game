@@ -21,15 +21,17 @@ public class Cursor<T> {
     }
 
     /**
-     * Returns the current element, then moves the cursor forward.
+     * Moves the cursor forward, then returns the current element.
      * If it's at the end of the list, the cursor gets reset to 0,
      * so that it can start over again.
      */
     public T advance() {
-        T result = this.elements.get(this.cursor);
-        if (this.cursor >= this.elements.size() - 1) this.cursor = 0;
-        else this.cursor++;
+        if (this.cursor >= this.elements.size() - 1) {
+            this.cursor = 0;
+        } else {
+            this.cursor++;
+        }
 
-        return result;
+        return this.elements.get(this.cursor);
     }
 }
