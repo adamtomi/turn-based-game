@@ -1,11 +1,15 @@
 package com.vamk.tbg.signal;
 
+import com.vamk.tbg.util.LogUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class SignalDispatcher {
+    private static final Logger LOGGER = LogUtil.getLogger(SignalDispatcher.class);
     private final Map<Class<? extends Signal>, List<SignalHandler<? extends Signal>>> handlers;
 
     public SignalDispatcher() {
@@ -16,10 +20,12 @@ public class SignalDispatcher {
         if (!this.handlers.containsKey(type)) this.handlers.put(type, new ArrayList<>());
 
         this.handlers.get(type).add(handler);
+        LOGGER.info("Registering signal handler %s for type %s".formatted(handler, type.getName()));
     }
 
     @SuppressWarnings("unchecked")
     public void dispatch(Signal signal) {
+        LOGGER.info("Dispatching signal %s".formatted(signal));
         List<SignalHandler<? extends Signal>> handlers = this.handlers.get(signal.getClass());
         if (handlers == null || handlers.isEmpty()) return;
 
