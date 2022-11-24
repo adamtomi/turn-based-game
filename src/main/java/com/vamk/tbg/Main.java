@@ -8,9 +8,9 @@ public class Main {
 
     public static void main(String[] args) {
         SignalDispatcher dispatcher = new SignalDispatcher();
-        GameWindow container = new GameWindow(dispatcher);
+        GameWindow window = new GameWindow(dispatcher);
         Game game = new Game(dispatcher);
         game.launch();
-        container.dispose();
+        window.dispose();
     }
 }
