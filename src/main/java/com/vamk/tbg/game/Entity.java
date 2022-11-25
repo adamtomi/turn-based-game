@@ -1,6 +1,5 @@
 package com.vamk.tbg.game;
 
-import com.vamk.tbg.Constants;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.combat.CombatRegistry;
 import com.vamk.tbg.effect.StatusEffect;
@@ -113,7 +112,7 @@ public class Entity implements Tickable {
     }
 
     public void applyEffect(StatusEffect effect) {
-        this.activeEffects.merge(effect, effect.getRounds(), (key, value) -> Math.min(value + 1, Constants.EFFECT_MAX_ROUNDS));
+        this.activeEffects.merge(effect, effect.getRounds(), (key, value) -> Math.min(value + 1, StatusEffect.MAX_ROUNDS));
         this.dispatcher.dispatch(new EffectsUpdatedSignal(this));
     }
 

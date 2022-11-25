@@ -37,6 +37,7 @@ public enum StatusEffect {
     REGENERATION(3, true),
     ;
 
+    public static final int MAX_ROUNDS = 5;
     private final int rounds;
     private final boolean harmful;
 
