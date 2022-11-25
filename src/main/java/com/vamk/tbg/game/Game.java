@@ -44,17 +44,6 @@ public class Game {
         this.effectHandlers = Set.of(new BleedingEffectHandler(), new RegenEffectHandler());
     }
 
-    public void launch() {
-        prepare();
-        gameLoop();
-        LOGGER.info("Shutting down, thank you :)");
-    }
-
-    public boolean isFinished() {
-        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
-        return !(hostiles > 0 && this.entities.size() - hostiles > 0);
-    }
-
     public GameState exportState() {
         List<EntitySnapshot> entities = this.entities.stream().map(Entity::createSnapshot).toList();
         return new GameState(entities, this.cursor.getInternalCursor());
@@ -66,6 +55,12 @@ public class Game {
         this.entities.addAll(entities);
         this.cursor = new Cursor<>(this.entities, state.getCursor());
         this.importedState = true;
+    }
+
+    public void launch() {
+        prepare();
+        gameLoop();
+        LOGGER.info("Shutting down, thank you :)");
     }
 
     private void prepare() {
@@ -122,11 +117,16 @@ public class Game {
     }
     
     private void gameLoop() {
-        while (!isFinished()) {
+        while (shouldContinue()) {
             Entity entity = this.cursor.advance();
             LOGGER.info("Entity %d is playing".formatted(entity.getId()));
             play(entity);
         }
+    }
+
+    private boolean shouldContinue() {
+        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
+        return hostiles > 0 && this.entities.size() - hostiles > 0;
     }
 
     private void play(Entity entity) {
