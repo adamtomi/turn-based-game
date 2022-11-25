@@ -29,7 +29,7 @@ public class Main {
             SignalDispatcher dispatcher = new SignalDispatcher();
             this.config = new Config();
             this.game = new Game(dispatcher, this.config);
-            this.window = new GameWindow(dispatcher, this::handleForceShutdown);
+            this.window = new GameWindow(dispatcher, this.config, this::handleForceShutdown);
         }
 
         private void launch() {

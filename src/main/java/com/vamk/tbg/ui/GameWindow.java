@@ -1,5 +1,6 @@
 package com.vamk.tbg.ui;
 
+import com.vamk.tbg.config.Config;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 
@@ -17,7 +18,7 @@ public class GameWindow extends JFrame implements WindowListener {
     private final JLabel entityLabel;
     private final Runnable shutdownHook;
 
-    public GameWindow(SignalDispatcher dispatcher, Runnable shutdownHook) {
+    public GameWindow(SignalDispatcher dispatcher, Config config, Runnable shutdownHook) {
         this.entityLabel = new JLabel();
         this.entityLabel.setFont(new Font("Serif", Font.BOLD, 20)); // Change the default font size
         this.entityLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -31,7 +32,7 @@ public class GameWindow extends JFrame implements WindowListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 500);
         setLayout(new GridLayout(3,  1));
-        add(new ButtonContainer(dispatcher));
+        add(new ButtonContainer(dispatcher, config));
         add(this.entityLabel);
         add(new EntityDataContainer(dispatcher));
         setVisible(true);

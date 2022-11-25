@@ -1,6 +1,8 @@
 package com.vamk.tbg.ui;
 
 import com.vamk.tbg.combat.Move;
+import com.vamk.tbg.config.Config;
+import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
@@ -27,12 +29,14 @@ public class ButtonContainer extends JPanel implements Tickable {
     private static final long serialVersionUID = -1848838910296723317L;
     // TODO remove static instance
     private static ButtonContainer instance;
+    private final Config config;
     private final Awaitable<Entity> entity;
     private final Map<Integer, JButton> entityButtons;
     private final List<JButton> moveButtons;
     private int moveIdx;
 
-    public ButtonContainer(SignalDispatcher dispatcher) {
+    public ButtonContainer(SignalDispatcher dispatcher, Config config) {
+        this.config = config;
         this.entity = new Awaitable<>();
         this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
@@ -63,7 +67,8 @@ public class ButtonContainer extends JPanel implements Tickable {
         sep.setVisible(false);
         add(sep);
 
-        for (int i = 0; i < 4; i++) {
+        int moveCount = this.config.get(Keys.MOVE_COUNT);
+        for (int i = 0; i < moveCount; i++) {
             JButton button = new JButton("Move %d".formatted(i));
             button.setSize(100, 50);
 
