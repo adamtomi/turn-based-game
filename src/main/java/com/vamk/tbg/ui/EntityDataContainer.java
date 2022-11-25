@@ -10,10 +10,13 @@ import com.vamk.tbg.signal.impl.GameReadySignal;
 
 import javax.swing.JPanel;
 import java.awt.GridLayout;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EntityDataContainer extends JPanel {
+    @Serial
+    private static final long serialVersionUID = -7455891810519039109L;
     private final Map<Integer, EntityData> entityData;
 
     public EntityDataContainer(SignalDispatcher dispatcher) {

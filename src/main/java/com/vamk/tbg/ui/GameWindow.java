@@ -9,8 +9,11 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.Serial;
 
 public class GameWindow extends JFrame implements WindowListener {
+    @Serial
+    private static final long serialVersionUID = 3210313597488494598L;
     private final JLabel entityLabel;
     private final Runnable shutdownHook;
 

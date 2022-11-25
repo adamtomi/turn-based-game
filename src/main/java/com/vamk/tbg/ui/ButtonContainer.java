@@ -16,12 +16,15 @@ import javax.swing.JSeparator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ButtonContainer extends JPanel implements Tickable {
+    @Serial
+    private static final long serialVersionUID = -1848838910296723317L;
     // TODO remove static instance
     private static ButtonContainer instance;
     private final Awaitable<Entity> entity;
