@@ -15,6 +15,7 @@ final class MovePresetsKey extends AbstractConfigKey<List<List<String>>> {
     public List<List<String>> map(String value) {
         String[] entries = value.split(",");
         return Arrays.stream(entries)
+                .map(String::trim)
                 .map(this::processInvididual)
                 .toList();
     }
