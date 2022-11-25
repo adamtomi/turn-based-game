@@ -1,0 +1,28 @@
+# You may use this configuration file to change
+# certain aspects of the game.
+# NOTE: This file is read line by line. Empty lines
+# and comments are ignored, but each line is treated
+# as a new configuration entry.
+
+# Number of entities PER TEAM.
+game.entity-count: 3
+
+# Maximum health of entities.
+game.entity-max-health: 1000
+
+# Max move count of entities. Each entity has to have
+# this many moves, otherwise the UI will start acting
+# funny.
+game.move-count: 4
+
+# Preset move combination. Each combination has to have
+# as many elements as defined by 'game.move-count'. All
+# entries will be read, validated and assigned to a random
+# (hostile/friendly) entity. You can look at classes in the
+# combat package for move names.
+game.move-presets: (BUFF HEAL_ALL DEBUFF GENERIC_ATTACK),(HEAL CURE DEBUFF SPLASH_DAMAGE)
+
+# If the game is forcibly shut down (pressing the x
+# button, before the game would end on its own), a
+# backup will be generated at this location.
+game-state-backup.location: backup.dat

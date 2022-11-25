@@ -3,4 +3,4 @@
 build/
 gradle/wrapper/*.jar
 out/
-gamestate.dat
+*.dat

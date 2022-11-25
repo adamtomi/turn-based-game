@@ -1,11 +1,12 @@
 package com.vamk.tbg.game;
 
 import com.vamk.tbg.combat.BuffMove;
-import com.vamk.tbg.combat.CombatRegistry;
 import com.vamk.tbg.combat.DebuffMove;
 import com.vamk.tbg.combat.GenericAttackMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
+import com.vamk.tbg.config.Config;
+import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.effect.BleedingEffectHandler;
 import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
@@ -28,14 +29,16 @@ import java.util.logging.Logger;
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final SignalDispatcher dispatcher;
+    private final Config config;
     private final Entity.Factory entityFactory;
     private final List<Entity> entities;
     private final Set<StatusEffectHandler> effectHandlers;
     private Cursor<Entity> cursor;
     private boolean importedState = false;
 
-    public Game(SignalDispatcher dispatcher) {
+    public Game(SignalDispatcher dispatcher, Config config) {
         this.dispatcher = dispatcher;
+        this.config = config;
         this.entityFactory = new Entity.Factory(dispatcher);
         this.entities = new ArrayList<>();
         this.effectHandlers = Set.of(new BleedingEffectHandler(), new RegenEffectHandler());
@@ -81,11 +84,12 @@ public class Game {
                     new GenericAttackMove()
             );
 
-            // TODO read i from config
-            // TODO read maxHealth from config
-            for (int i = 0; i < 3; i++) {
-                this.entities.add(this.entityFactory.create(false, 1000, moves));
-                this.entities.add(this.entityFactory.create(true, 1000, moves));
+            int maxHealth = this.config.get(Keys.ENTITY_MAX_HEALTH);
+            int entityCount = this.config.get(Keys.ENTITY_COUNT);
+
+            for (int i = 0; i < entityCount; i++) {
+                this.entities.add(this.entityFactory.create(false, maxHealth, moves));
+                this.entities.add(this.entityFactory.create(true, maxHealth, moves));
             }
 
             RandomUtil.randomize(this.entities);
