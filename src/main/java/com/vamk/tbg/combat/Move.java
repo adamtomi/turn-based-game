@@ -3,9 +3,7 @@ package com.vamk.tbg.combat;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 
-import java.io.Serializable;
-
-public interface Move extends Serializable {
+public interface Move {
 
     String getId();
 

@@ -5,7 +5,6 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
-import java.io.Serial;
 import java.util.logging.Logger;
 
 import static com.vamk.tbg.util.RandomUtil.chance;
@@ -13,8 +12,6 @@ import static com.vamk.tbg.util.RandomUtil.chance;
 public class SplashDamageMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(SplashDamageMove.class);
     private static final int BLEEDING_CHANCE = 50;
-    @Serial
-    private static final long serialVersionUID = 1791438698674539499L;
 
     public SplashDamageMove() {
         super("SPLASH_DAMAGE", true);

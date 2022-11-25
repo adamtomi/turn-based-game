@@ -5,7 +5,6 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
-import java.io.Serial;
 import java.util.logging.Logger;
 
 import static com.vamk.tbg.util.RandomUtil.chance;
@@ -15,8 +14,6 @@ public class BuffMove extends AbstractMove {
     private static final int REGEN_CHANCE = 40;
     private static final int LIFESTEAL_CHANCE = 10;
     private static final int CAFFEINATED_CHANCE = 5;
-    @Serial
-    private static final long serialVersionUID = 9096256805043526477L;
 
     public BuffMove() {
         super("BUFF", false);

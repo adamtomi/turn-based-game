@@ -9,20 +9,18 @@ import java.util.logging.Logger;
 public class RegenEffectHandler implements StatusEffectHandler {
     private static final Logger LOGGER = LogUtil.getLogger(RegenEffectHandler.class);
     private final Random random;
-    private final Entity entity;
 
-    public RegenEffectHandler(Entity entity) {
+    public RegenEffectHandler() {
         this.random = new Random();
-        this.entity = entity;
     }
 
     @Override
-    public void tick() {
-        if (!this.entity.hasEffect(StatusEffect.REGENERATION)) return;
+    public void applyTo(Entity entity) {
+        if (!entity.hasEffect(StatusEffect.REGENERATION)) return;
 
         // TODO make this configurable
-        int hp = this.random.nextInt(Math.max((int) (this.entity.getMaxHealth() * 0.01), 1));
-        this.entity.heal(hp);
-        LOGGER.info("Entity %d gains %d health thanks to regeneration".formatted(this.entity.getId(), hp));
+        int hp = this.random.nextInt(Math.max((int) (entity.getMaxHealth() * 0.01), 1));
+        entity.heal(hp);
+        LOGGER.info("Entity %d gains %d health thanks to regeneration".formatted(entity.getId(), hp));
     }
 }

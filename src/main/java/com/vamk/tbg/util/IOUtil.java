@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class IOUtil {
 
@@ -24,5 +27,15 @@ public final class IOUtil {
 
             return type.cast(result);
         }
+    }
+
+    public static boolean fileExists(String path) {
+        Path file = Paths.get(path);
+        return Files.exists(file);
+    }
+
+    public static void remove(String path) throws IOException {
+        Path file = Paths.get(path);
+        Files.deleteIfExists(file);
     }
 }

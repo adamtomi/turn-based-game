@@ -2,10 +2,8 @@ package com.vamk.tbg.game;
 
 import com.vamk.tbg.Constants;
 import com.vamk.tbg.combat.Move;
-import com.vamk.tbg.effect.BleedingEffectHandler;
-import com.vamk.tbg.effect.RegenEffectHandler;
+import com.vamk.tbg.combat.CombatRegistry;
 import com.vamk.tbg.effect.StatusEffect;
-import com.vamk.tbg.effect.StatusEffectHandler;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
@@ -13,8 +11,6 @@ import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.Tickable;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,31 +20,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class Entity implements Serializable, Tickable {
-    @Serial
-    private static final long serialVersionUID = 6101117327941388691L;
+public class Entity implements Tickable {
     private final Map<StatusEffect, Integer> activeEffects;
-    private final transient Set<StatusEffectHandler> effectHandlers;
     private final int id;
     private final boolean hostile;
     private final int maxHealth;
     private int health;
     private final List<Move> moves;
-    private final transient SignalDispatcher dispatcher;
+    private final SignalDispatcher dispatcher;
 
-    public Entity(int id, boolean hostile, int maxHealth, List<Move> moves, SignalDispatcher dispatcher) {
+    public Entity(int id, boolean hostile, int health, int maxHealth, List<Move> moves, SignalDispatcher dispatcher) {
         this.id = id;
         this.hostile = hostile;
+        this.health = health;
         this.maxHealth = maxHealth;
-        this.health = maxHealth;
         this.moves = moves;
         this.dispatcher = dispatcher;
-
         this.activeEffects = new HashMap<>();
-        this.effectHandlers = Set.of(
-                new BleedingEffectHandler(this),
-                new RegenEffectHandler(this)
-        );
+    }
+
+    public Entity(int id, boolean hostile, int maxHealth, List<Move> moves, SignalDispatcher dispatcher) {
+        this(id, hostile, maxHealth, maxHealth, moves, dispatcher);
     }
 
     public int getId() {
@@ -143,9 +135,13 @@ public class Entity implements Serializable, Tickable {
         this.dispatcher.dispatch(new EffectsUpdatedSignal(this));
     }
 
+    public EntitySnapshot createSnapshot() {
+        List<String> moves = this.moves.stream().map(Move::getId).toList();
+        return new EntitySnapshot(this.id, this.hostile, this.health, this.maxHealth, moves);
+    }
+
     @Override
     public void tick() {
-        this.effectHandlers.forEach(Tickable::tick);
         Set<StatusEffect> expired = new HashSet<>();
         for (Map.Entry<StatusEffect, Integer> entry : this.activeEffects.entrySet()) {
             int rounds = entry.getValue() - 1;
@@ -183,16 +179,27 @@ public class Entity implements Serializable, Tickable {
     static final class Factory {
         private static final Logger LOGGER = LogUtil.getLogger(Factory.class);
         private final SignalDispatcher dispatcher;
+        private final CombatRegistry combatRegistry;
         private final AtomicInteger nextId;
 
         Factory(SignalDispatcher dispatcher) {
             this.dispatcher = dispatcher;
+            this.combatRegistry = new CombatRegistry();
             this.nextId = new AtomicInteger(0);
         }
 
         Entity create(boolean hostile, int maxHeath, List<Move> moves) {
             Entity entity =  new Entity(this.nextId.getAndIncrement(), hostile, maxHeath, moves, this.dispatcher);
             LOGGER.info("Created entity %s".formatted(entity));
+            return entity;
+        }
+
+        Entity create(EntitySnapshot snapshot) {
+            List<Move> moves = snapshot.moves().stream()
+                    .map(this.combatRegistry::findMove)
+                    .toList();
+            Entity entity =  new Entity(snapshot.id(), snapshot.hostile(), snapshot.health(), snapshot.maxHealth(), moves, this.dispatcher);
+            LOGGER.info("Restored entity %s".formatted(entity));
             return entity;
         }
     }

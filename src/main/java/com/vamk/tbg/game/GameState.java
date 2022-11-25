@@ -8,15 +8,15 @@ public class GameState implements Serializable {
     public static final String FILEPATH = "gamestate.dat";
     @Serial
     private static final long serialVersionUID = -7970394955414240184L;
-    private final List<Entity> entities;
+    private final List<EntitySnapshot> entities;
     private final int cursor;
 
-    public GameState(List<Entity> entities, int cursor) {
+    public GameState(List<EntitySnapshot> entities, int cursor) {
         this.entities = entities;
         this.cursor = cursor;
     }
 
-    public List<Entity> getEntities() {
+    public List<EntitySnapshot> getEntities() {
         return this.entities;
     }
 

@@ -1,5 +1,8 @@
 package com.vamk.tbg.effect;
 
-import com.vamk.tbg.util.Tickable;
+import com.vamk.tbg.game.Entity;
 
-public interface StatusEffectHandler extends Tickable {}
+public interface StatusEffectHandler {
+
+    void applyTo(Entity entity);
+}

@@ -5,7 +5,6 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
-import java.io.Serial;
 import java.util.logging.Logger;
 
 import static com.vamk.tbg.util.RandomUtil.chance;
@@ -15,8 +14,6 @@ public class DebuffMove extends AbstractMove {
     private static final int BLEEDING_CHANCE = 50;
     private static final int FROZEN_CHANCE = 10;
     private static final int CONFUSED_CHANCE = 5;
-    @Serial
-    private static final long serialVersionUID = 3531606415607174312L;
 
     public DebuffMove() {
         super("DEBUFF", true);

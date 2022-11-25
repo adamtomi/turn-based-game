@@ -1,11 +1,15 @@
 package com.vamk.tbg.game;
 
 import com.vamk.tbg.combat.BuffMove;
+import com.vamk.tbg.combat.CombatRegistry;
 import com.vamk.tbg.combat.DebuffMove;
 import com.vamk.tbg.combat.GenericAttackMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.Move;
+import com.vamk.tbg.effect.BleedingEffectHandler;
+import com.vamk.tbg.effect.RegenEffectHandler;
 import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.effect.StatusEffectHandler;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
@@ -18,6 +22,7 @@ import com.vamk.tbg.util.UserInput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class Game {
@@ -25,12 +30,15 @@ public class Game {
     private final SignalDispatcher dispatcher;
     private final Entity.Factory entityFactory;
     private final List<Entity> entities;
+    private final Set<StatusEffectHandler> effectHandlers;
     private Cursor<Entity> cursor;
+    private boolean importedState = false;
 
     public Game(SignalDispatcher dispatcher) {
         this.dispatcher = dispatcher;
         this.entityFactory = new Entity.Factory(dispatcher);
         this.entities = new ArrayList<>();
+        this.effectHandlers = Set.of(new BleedingEffectHandler(), new RegenEffectHandler());
     }
 
     public void launch() {
@@ -39,26 +47,51 @@ public class Game {
         LOGGER.info("Shutting down, thank you :)");
     }
 
-    private void prepare() {
-        LOGGER.info("Preparing game, spawning entities...");
-        this.dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
-        // TODO read moves from config (entity presets?)
-        List<Move> moves = List.of(
-                new BuffMove(),
-                new HealAllMove(),
-                new DebuffMove(),
-                new GenericAttackMove()
-        );
+    public boolean isFinished() {
+        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
+        return !(hostiles > 0 && this.entities.size() - hostiles > 0);
+    }
 
-        // TODO read i from config
-        // TODO read maxHealth from config
-        for (int i = 0; i < 3; i++) {
-            this.entities.add(this.entityFactory.create(false, 1000, moves));
-            this.entities.add(this.entityFactory.create(true, 1000, moves));
+    public GameState exportState() {
+        List<EntitySnapshot> entities = this.entities.stream().map(Entity::createSnapshot).toList();
+        return new GameState(entities, this.cursor.getInternalCursor());
+    }
+
+    public void importState(GameState state) {
+        LOGGER.info("Restoring previous game state...");
+        List<Entity> entities = state.getEntities().stream().map(this.entityFactory::create).toList();
+        this.entities.addAll(entities);
+        this.cursor = new Cursor<>(this.entities, state.getCursor());
+        this.importedState = true;
+    }
+
+    private void prepare() {
+        this.dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
+        /*
+         * If a previously exported game state was restored, we don't
+         * need to ge through this setup process.
+         */
+        if (!this.importedState) {
+            LOGGER.info("Preparing game, spawning entities...");
+            // TODO read moves from config (entity presets?)
+            List<Move> moves = List.of(
+                    new BuffMove(),
+                    new HealAllMove(),
+                    new DebuffMove(),
+                    new GenericAttackMove()
+            );
+
+            // TODO read i from config
+            // TODO read maxHealth from config
+            for (int i = 0; i < 3; i++) {
+                this.entities.add(this.entityFactory.create(false, 1000, moves));
+                this.entities.add(this.entityFactory.create(true, 1000, moves));
+            }
+
+            RandomUtil.randomize(this.entities);
+            this.cursor = new Cursor<>(this.entities);
         }
 
-        RandomUtil.randomize(this.entities);
-        this.cursor = new Cursor<>(this.entities);
         this.dispatcher.dispatch(new GameReadySignal(this.entities));
         LOGGER.info("Done!");
     }
@@ -83,6 +116,7 @@ public class Game {
          * skipping their round.
          */
         entity.tick();
+        this.effectHandlers.forEach(x -> x.applyTo(entity));
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {
             Move move;
@@ -115,14 +149,5 @@ public class Game {
 
         // CAFFEINATED grants another turn
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
-    }
-
-    public boolean isFinished() {
-        int hostiles = (int) this.entities.stream().filter(Entity::isHostile).count();
-        return !(hostiles > 0 && this.entities.size() - hostiles > 0);
-    }
-
-    public GameState exportState() {
-        return new GameState(this.entities, this.cursor.getInternalCursor());
     }
 }

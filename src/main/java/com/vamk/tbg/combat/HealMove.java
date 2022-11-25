@@ -5,7 +5,6 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
-import java.io.Serial;
 import java.util.logging.Logger;
 
 import static com.vamk.tbg.util.RandomUtil.chance;
@@ -14,8 +13,6 @@ public class HealMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealMove.class);
     private static final int REGENERATION_CHANCE = 15;
     private static final int LIFESTEAL_CHANCE = 10;
-    @Serial
-    private static final long serialVersionUID = -8821620767840800124L;
 
     public HealMove() {
         super("HEAL", false);
