@@ -15,8 +15,6 @@ import com.vamk.tbg.util.UserInput;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -46,31 +44,31 @@ public class ButtonContainer extends JPanel implements Tickable {
         dispatcher.subscribe(EntityPlaysSignal.class, this::onEntityPlays);
         dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
 
+        setLayout(new GridLayout(3, 1, 10, 10));
         setVisible(true);
-        setLayout(new GridLayout(2, 6, 20, 20));
         instance = this;
     }
 
     private void onGameReady(GameReadySignal signal) {
+        JPanel entityPanel = new JPanel();
         for (Entity entity : signal.getEntities()) {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
-            button.setPreferredSize(new Dimension(100, 50));
 
             button.addActionListener(event -> ButtonContainer.this.entity.complete(entity));
 
             button.setVisible(true);
-            add(button, BorderLayout.PAGE_START);
+            entityPanel.add(button);
             this.entityButtons.put(entity.getId(), button);
         }
 
+        add(entityPanel);
         JSeparator sep = new JSeparator();
-        sep.setVisible(false);
         add(sep);
 
         int moveCount = this.config.get(Keys.MOVE_COUNT);
+        JPanel movePanel = new JPanel();
         for (int i = 0; i < moveCount; i++) {
             JButton button = new JButton("Move %d".formatted(i));
-            button.setSize(100, 50);
 
             int finalI = i;
             button.addActionListener(e -> ButtonContainer.this.moveIdx = finalI);
@@ -78,8 +76,10 @@ public class ButtonContainer extends JPanel implements Tickable {
             button.setEnabled(false);
             button.setVisible(true);
             this.moveButtons.add(button);
-            add(button);
+            movePanel.add(button);
         }
+
+        add(movePanel);
     }
 
     private void onEntityPlays(EntityPlaysSignal signal) {

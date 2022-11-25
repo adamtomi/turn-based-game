@@ -30,7 +30,7 @@ public class GameWindow extends JFrame implements WindowListener {
         setFocusable(true);
         setTitle("Turn Based Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500);
+        setSize(1000, 1000);
         setLayout(new GridLayout(3,  1));
         add(new ButtonContainer(dispatcher, config));
         add(this.entityLabel);
