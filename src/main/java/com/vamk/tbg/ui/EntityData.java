@@ -4,7 +4,6 @@ import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import java.awt.Color;
@@ -17,9 +16,9 @@ public class EntityData {
     private static final Color FRIENDLY_COLOR = new Color(60, 160, 38);
     private static final Color DEFAULT_BG_COLOR = new Color(220, 220, 220);
     private final Entity entity;
-    private final JLabel idLabel;
-    private final JLabel healthLabel;
-    private final JLabel effectsLabel;
+    private final JText idLabel;
+    private final JText healthLabel;
+    private final JText effectsLabel;
     private final JPanel panel;
 
     public EntityData(Entity entity, boolean highlight) {
@@ -27,13 +26,13 @@ public class EntityData {
         Color bgColor = highlight ? Color.WHITE : DEFAULT_BG_COLOR;
 
         this.entity = entity;
-        this.idLabel = new JLabel("Entity id: %d".formatted(entity.getId()));
+        this.idLabel = new JText("Entity id: %d".formatted(entity.getId()));
         this.idLabel.setForeground(textColor);
-        this.idLabel.setFont(new Font("Serif", Font.BOLD, 15));
+        this.idLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 
-        this.healthLabel = new JLabel(getHealthEntry());
+        this.healthLabel = new JText(getHealthEntry());
         this.healthLabel.setForeground(textColor);
-        this.effectsLabel = new JLabel(getEffectsEntry());
+        this.effectsLabel = new JText(getEffectsEntry());
         this.effectsLabel.setForeground(textColor);
 
         this.panel = new JPanel();

@@ -20,7 +20,7 @@ public class GameWindow extends JFrame implements WindowListener {
 
     public GameWindow(SignalDispatcher dispatcher, Config config, Runnable shutdownHook) {
         this.entityLabel = new JLabel();
-        this.entityLabel.setFont(new Font("Serif", Font.BOLD, 20)); // Change the default font size
+        this.entityLabel.setFont(new Font("Tahoma", Font.BOLD, 20)); // Change the default font size
         this.entityLabel.setHorizontalAlignment(JLabel.CENTER);
         this.entityLabel.setVerticalAlignment(JLabel.CENTER);
         this.shutdownHook = shutdownHook;
