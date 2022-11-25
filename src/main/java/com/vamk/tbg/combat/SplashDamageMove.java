@@ -22,7 +22,7 @@ public class SplashDamageMove extends AbstractMove {
         Entity source = context.source();
         for (Entity entity : context.allEntities()) {
             // Don't damage friendly entities
-            if (!entity.isEnemyOf(source)) return;
+            if (!entity.isEnemyOf(source)) continue;
 
             if (chance(BLEEDING_CHANCE)) {
                 entity.applyEffect(StatusEffect.BLEEDING);

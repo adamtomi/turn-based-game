@@ -112,8 +112,6 @@ public class Game {
             }
         }
 
-        // System.out.println(result);
-        LOGGER.info("%s".formatted(result));
         return result;
     }
 
@@ -164,7 +162,7 @@ public class Game {
                 target = RandomUtil.pickRandom(targets);
             }
 
-            MoveContext context = new MoveContext(entity, target, this.entities);
+            MoveContext context = new MoveContext(entity, target, List.copyOf(this.entities));
             move.perform(context);
         }
 
