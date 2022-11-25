@@ -20,7 +20,7 @@ game.move-count: 4
 # entries will be read, validated and assigned to a random
 # (hostile/friendly) entity. You can look at classes in the
 # combat package for move names.
-game.move-presets: (BUFF HEAL_ALL DEBUFF GENERIC_ATTACK),(HEAL CURE DEBUFF SPLASH_DAMAGE)
+game.move-presets: [BUFF HEAL_ALL DEBUFF GENERIC_ATTACK],[HEAL CURE DEBUFF SPLASH_DAMAGE]
 
 # If the game is forcibly shut down (pressing the x
 # button, before the game would end on its own), a

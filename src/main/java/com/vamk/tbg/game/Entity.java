@@ -182,9 +182,9 @@ public class Entity implements Tickable {
         private final CombatRegistry combatRegistry;
         private final AtomicInteger nextId;
 
-        Factory(SignalDispatcher dispatcher) {
+        Factory(SignalDispatcher dispatcher, CombatRegistry combatRegistry) {
             this.dispatcher = dispatcher;
-            this.combatRegistry = new CombatRegistry();
+            this.combatRegistry = combatRegistry;
             this.nextId = new AtomicInteger(0);
         }
 

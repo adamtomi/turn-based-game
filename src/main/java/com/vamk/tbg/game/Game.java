@@ -1,9 +1,6 @@
 package com.vamk.tbg.game;
 
-import com.vamk.tbg.combat.BuffMove;
-import com.vamk.tbg.combat.DebuffMove;
-import com.vamk.tbg.combat.GenericAttackMove;
-import com.vamk.tbg.combat.HealAllMove;
+import com.vamk.tbg.combat.CombatRegistry;
 import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
@@ -23,6 +20,7 @@ import com.vamk.tbg.util.UserInput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -30,6 +28,7 @@ public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final SignalDispatcher dispatcher;
     private final Config config;
+    private final CombatRegistry combatRegistry;
     private final Entity.Factory entityFactory;
     private final List<Entity> entities;
     private final Set<StatusEffectHandler> effectHandlers;
@@ -39,7 +38,8 @@ public class Game {
     public Game(SignalDispatcher dispatcher, Config config) {
         this.dispatcher = dispatcher;
         this.config = config;
-        this.entityFactory = new Entity.Factory(dispatcher);
+        this.combatRegistry = new CombatRegistry();
+        this.entityFactory = new Entity.Factory(dispatcher, this.combatRegistry);
         this.entities = new ArrayList<>();
         this.effectHandlers = Set.of(new BleedingEffectHandler(), new RegenEffectHandler());
     }
@@ -76,20 +76,14 @@ public class Game {
          */
         if (!this.importedState) {
             LOGGER.info("Preparing game, spawning entities...");
-            // TODO read moves from config (entity presets?)
-            List<Move> moves = List.of(
-                    new BuffMove(),
-                    new HealAllMove(),
-                    new DebuffMove(),
-                    new GenericAttackMove()
-            );
+            List<List<Move>> moveCombos = readAndValidateMoves();
 
             int maxHealth = this.config.get(Keys.ENTITY_MAX_HEALTH);
             int entityCount = this.config.get(Keys.ENTITY_COUNT);
 
             for (int i = 0; i < entityCount; i++) {
-                this.entities.add(this.entityFactory.create(false, maxHealth, moves));
-                this.entities.add(this.entityFactory.create(true, maxHealth, moves));
+                this.entities.add(this.entityFactory.create(false, maxHealth, RandomUtil.pickRandom(moveCombos)));
+                this.entities.add(this.entityFactory.create(true, maxHealth, RandomUtil.pickRandom(moveCombos)));
             }
 
             RandomUtil.randomize(this.entities);
@@ -98,6 +92,29 @@ public class Game {
 
         this.dispatcher.dispatch(new GameReadySignal(this.entities));
         LOGGER.info("Done!");
+    }
+
+    private List<List<Move>> readAndValidateMoves() {
+        List<List<String>> configured = this.config.get(Keys.MOVE_PRESETS);
+        int expectedCount = this.config.get(Keys.MOVE_COUNT);
+        List<List<Move>> result = new ArrayList<>();
+
+        for (List<String> preset : configured) {
+            List<Move> moves = preset.stream()
+                    .map(this.combatRegistry::findMove)
+                    .filter(Objects::nonNull) // If the entry is null, then the specified ID was invalid
+                    .toList();
+
+            if (moves.size() != expectedCount) {
+                LOGGER.warning("Detected invalid move preset: %s".formatted(preset));
+            } else {
+                result.add(moves);
+            }
+        }
+
+        // System.out.println(result);
+        LOGGER.info("%s".formatted(result));
+        return result;
     }
 
     private void onEntityDeath(EntityDeathSignal signal) {
