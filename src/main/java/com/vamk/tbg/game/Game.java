@@ -53,6 +53,7 @@ public class Game {
         List<Entity> entities = state.entities().stream().map(this.entityFactory::create).toList();
         this.entities.addAll(entities);
         this.cursor = new Cursor<>(this.entities, state.cursor());
+        this.cursor.rollback();
         this.importedState = true;
     }
 

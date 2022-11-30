@@ -41,4 +41,12 @@ public class Cursor<T> {
     public int getInternalCursor() {
         return this.cursor;
     }
+
+    public void rollback() {
+        if (this.cursor == 0) {
+            this.cursor = this.elements.size() - 1;
+        } else {
+            this.cursor--;
+        }
+    }
 }
