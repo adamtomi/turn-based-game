@@ -78,13 +78,6 @@ public class ButtonContainer extends JPanel implements Tickable {
         add(movePanel);
     }
 
-    private void onEntityPlays(EntityPlaysSignal signal) {
-        tick();
-        updateButtonsFor(signal.getEntity());
-        if (signal.isUserControlled()) enableMoveButtons();
-        else disableMoveButtons();
-    }
-
     private void onEntityDeath(EntityDeathSignal signal) {
         Entity entity = signal.getEntity();
         JButton button = this.entityButtons.remove(entity.getId());
@@ -93,20 +86,18 @@ public class ButtonContainer extends JPanel implements Tickable {
         button.setEnabled(false);
     }
 
-    public void updateButtonsFor(Entity entity) {
+    private void onEntityPlays(EntityPlaysSignal signal) {
+        tick();
+        this.moveButtons.forEach(x -> x.setEnabled(signal.isUserControlled()));
+        updateButtonsFor(signal.getEntity());
+    }
+
+    private void updateButtonsFor(Entity entity) {
         for (int i = 0; i < this.moveButtons.size(); i++) {
             JButton button = this.moveButtons.get(i);
             Move move = entity.getMoves().get(i);
             button.setText(move.getId());
         }
-    }
-
-    public void enableMoveButtons() {
-        this.moveButtons.forEach(btn -> btn.setEnabled(true));
-    }
-
-    public void disableMoveButtons() {
-        this.moveButtons.forEach(btn -> btn.setEnabled(false));
     }
 
     @Override
