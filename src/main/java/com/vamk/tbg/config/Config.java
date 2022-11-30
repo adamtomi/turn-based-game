@@ -28,7 +28,7 @@ public class Config {
                     if (line.isBlank() || line.startsWith(COMMENT_SIGN)) continue;
 
                     String[] data = line.split(":", 2);
-                    if (data.length != 2) throw new RuntimeException("Detected invalid configration entry: '%s'".formatted(line));
+                    if (data.length != 2) throw new RuntimeException("Detected invalid configuration entry: '%s'".formatted(line));
 
                     // Trim strings to remove unwanted whitespace
                     this.internalConfig.put(data[0].trim(), data[1].trim());
