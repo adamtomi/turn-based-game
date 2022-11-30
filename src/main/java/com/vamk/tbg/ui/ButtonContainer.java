@@ -8,9 +8,8 @@ import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
-import com.vamk.tbg.util.Awaitable;
+import com.vamk.tbg.signal.impl.UserReadySignal;
 import com.vamk.tbg.util.Tickable;
-import com.vamk.tbg.util.UserInput;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -25,18 +24,15 @@ import java.util.Map;
 public class ButtonContainer extends JPanel implements Tickable {
     @Serial
     private static final long serialVersionUID = -1848838910296723317L;
-    // TODO remove static instance
-    @Deprecated
-    private static ButtonContainer instance;
+    private final SignalDispatcher dispatcher;
     private final Config config;
-    private final Awaitable<Entity> entity;
     private final Map<Integer, JButton> entityButtons;
     private final List<JButton> moveButtons;
     private int moveIdx;
 
     public ButtonContainer(SignalDispatcher dispatcher, Config config) {
+        this.dispatcher = dispatcher;
         this.config = config;
-        this.entity = new Awaitable<>();
         this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
         this.moveButtons = new ArrayList<>();
@@ -47,7 +43,6 @@ public class ButtonContainer extends JPanel implements Tickable {
 
         setLayout(new GridLayout(3, 1, 10, 10));
         setVisible(true);
-        instance = this;
     }
 
     private void onGameReady(GameReadySignal signal) {
@@ -55,7 +50,7 @@ public class ButtonContainer extends JPanel implements Tickable {
         for (Entity entity : signal.getEntities()) {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
 
-            button.addActionListener(event -> ButtonContainer.this.entity.complete(entity));
+            button.addActionListener(event -> this.dispatcher.dispatch(new UserReadySignal(entity, this.moveIdx)));
 
             button.setVisible(true);
             entityPanel.add(button);
@@ -98,14 +93,6 @@ public class ButtonContainer extends JPanel implements Tickable {
         button.setEnabled(false);
     }
 
-    @Deprecated
-    // TODO remove this method
-    public static ButtonContainer getInstance() {
-        if (instance == null) throw new IllegalStateException("Instance was not yet set");
-
-        return instance;
-    }
-
     public void updateButtonsFor(Entity entity) {
         for (int i = 0; i < this.moveButtons.size(); i++) {
             JButton button = this.moveButtons.get(i);
@@ -120,11 +107,6 @@ public class ButtonContainer extends JPanel implements Tickable {
 
     public void disableMoveButtons() {
         this.moveButtons.forEach(btn -> btn.setEnabled(false));
-    }
-
-    @Deprecated
-    public UserInput readUserInput() {
-        return new UserInput(this.entity.await(), this.moveIdx);
     }
 
     @Override
