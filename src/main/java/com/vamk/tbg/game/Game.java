@@ -50,9 +50,9 @@ public class Game {
 
     public void importState(GameState state) {
         LOGGER.info("Restoring previous game state...");
-        List<Entity> entities = state.getEntities().stream().map(this.entityFactory::create).toList();
+        List<Entity> entities = state.entities().stream().map(this.entityFactory::create).toList();
         this.entities.addAll(entities);
-        this.cursor = new Cursor<>(this.entities, state.getCursor());
+        this.cursor = new Cursor<>(this.entities, state.cursor());
         this.importedState = true;
     }
 
