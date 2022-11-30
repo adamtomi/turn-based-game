@@ -8,16 +8,16 @@ public enum StatusEffect {
      * Bleeding entities lose a chunk of their HP
      * every turn.
      */
-    BLEEDING(3, false),
+    BLEEDING(3, true),
     /**
      * Confused entities attack their teammates
      * instead of their enemies.
      */
-    CONFUSED(2, false),
+    CONFUSED(2, true),
     /**
      * Frozen entities lose a turn.
      */
-    FROZEN(2, false),
+    FROZEN(2, true),
 
     /* Positive effects */
 
@@ -25,16 +25,16 @@ public enum StatusEffect {
      * Caffeinated entities can attack twice in
      * a single round.
      */
-    CAFFEINATED(1, true),
+    CAFFEINATED(1, false),
     /**
      * Entities affected by lifesteal can gain some HP
      * if they deal damage to hostile entities.
      */
-    LIFESTEAL(2, true),
+    LIFESTEAL(2, false),
     /**
      * Entities will regenerate some HP each round.
      */
-    REGENERATION(3, true),
+    REGENERATION(3, false),
     ;
 
     public static final int MAX_ROUNDS = 5;
