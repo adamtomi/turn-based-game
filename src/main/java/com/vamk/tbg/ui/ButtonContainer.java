@@ -26,6 +26,7 @@ public class ButtonContainer extends JPanel implements Tickable {
     @Serial
     private static final long serialVersionUID = -1848838910296723317L;
     // TODO remove static instance
+    @Deprecated
     private static ButtonContainer instance;
     private final Config config;
     private final Awaitable<Entity> entity;
@@ -97,6 +98,7 @@ public class ButtonContainer extends JPanel implements Tickable {
         button.setEnabled(false);
     }
 
+    @Deprecated
     // TODO remove this method
     public static ButtonContainer getInstance() {
         if (instance == null) throw new IllegalStateException("Instance was not yet set");
@@ -120,6 +122,7 @@ public class ButtonContainer extends JPanel implements Tickable {
         this.moveButtons.forEach(btn -> btn.setEnabled(false));
     }
 
+    @Deprecated
     public UserInput readUserInput() {
         return new UserInput(this.entity.await(), this.moveIdx);
     }

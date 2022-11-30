@@ -2,6 +2,7 @@ package com.vamk.tbg.util;
 
 import java.util.concurrent.CountDownLatch;
 
+@Deprecated
 public class Awaitable<T> {
     private CountDownLatch latch;
     private T value;

@@ -4,6 +4,7 @@ import com.vamk.tbg.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -23,14 +24,23 @@ public class SignalDispatcher {
         LOGGER.info("Registering signal handler %s for type %s".formatted(handler, type.getName()));
     }
 
+    public <S extends Signal> S awaitSignal(Class<S> type) {
+        AwaitingSignalHandler<S> handler = new AwaitingSignalHandler<>();
+        subscribe(type, handler);
+        return handler.await();
+    }
+
     @SuppressWarnings("unchecked")
     public void dispatch(Signal signal) {
         LOGGER.info("Dispatching signal %s".formatted(signal));
         List<SignalHandler<? extends Signal>> handlers = this.handlers.get(signal.getClass());
         if (handlers == null || handlers.isEmpty()) return;
 
-        for (SignalHandler<? extends Signal> handler : handlers) {
-            ((SignalHandler<Signal>) handler).handle(signal);
+        for (Iterator<SignalHandler<? extends Signal>> iter = handlers.iterator(); iter.hasNext();) {
+            SignalHandler<Signal> handler = (SignalHandler<Signal>) iter.next();
+            handler.handle(signal);
+            // Remove awaiting handlers
+            if (handler instanceof AwaitingSignalHandler<Signal>) iter.remove();
         }
     }
 }

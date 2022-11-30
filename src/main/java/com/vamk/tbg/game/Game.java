@@ -12,11 +12,10 @@ import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
-import com.vamk.tbg.ui.ButtonContainer;
+import com.vamk.tbg.signal.impl.UserReadySignal;
 import com.vamk.tbg.util.Cursor;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
-import com.vamk.tbg.util.UserInput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,9 +147,9 @@ public class Game {
             this.dispatcher.dispatch(new EntityPlaysSignal(entity, userControlled));
 
             if (userControlled) {
-                UserInput input = ButtonContainer.getInstance().readUserInput();
-                move = entity.getMoves().get(input.moveIndex());
-                target = input.target();
+                UserReadySignal signal = this.dispatcher.awaitSignal(UserReadySignal.class);
+                move = entity.getMoves().get(signal.getMoveIndex());
+                target = signal.getTarget();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
                 List<Entity> targets = this.entities.stream()
