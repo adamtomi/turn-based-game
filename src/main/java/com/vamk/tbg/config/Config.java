@@ -30,8 +30,11 @@ public class Config {
                     String[] data = line.split(":", 2);
                     if (data.length != 2) throw new RuntimeException("Detected invalid configuration entry: '%s'".formatted(line));
 
-                    // Trim strings to remove unwanted whitespace
-                    this.internalConfig.put(data[0].trim(), data[1].trim());
+                    String key = data[0].trim();
+                    // Don't allow duplicate keys
+                    if (this.internalConfig.containsKey(key)) throw new IllegalStateException("Duplicate entries found for key '%s' ".formatted(key));
+
+                    this.internalConfig.put(key, data[1].trim());
                 }
             }
         }
