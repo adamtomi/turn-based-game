@@ -30,9 +30,9 @@ game-state-backup.location: backup.dat
 # This value determines how much health a bleeding entity
 # should lose each turn. It is treated as a percentage, so
 # the valid values go from 0 to 100.
-effect.bleeding-modifier: 10
+effect.bleeding-modifier: 5
 
 # This value determines how much health a regenrating entity
 # should gain each turn. It is treated as a percentage, so
 # the valid values go from 0 to 100.
-effect.regen-modifier: 5
+effect.regen-modifier: 1
