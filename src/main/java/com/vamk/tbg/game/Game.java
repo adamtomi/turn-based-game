@@ -40,7 +40,7 @@ public class Game {
         this.combatRegistry = new CombatRegistry();
         this.entityFactory = new Entity.Factory(dispatcher, this.combatRegistry);
         this.entities = new ArrayList<>();
-        this.effectHandlers = Set.of(new BleedingEffectHandler(), new RegenEffectHandler());
+        this.effectHandlers = Set.of(new BleedingEffectHandler(config), new RegenEffectHandler(config));
     }
 
     public GameState exportState() {

@@ -26,3 +26,13 @@ game.move-presets: [BUFF HEAL_ALL DEBUFF GENERIC_ATTACK],[HEAL CURE DEBUFF SPLAS
 # button, before the game would end on its own), a
 # backup will be generated at this location.
 game-state-backup.location: backup.dat
+
+# This value determines how much health a bleeding entity
+# should lose each turn. It is treated as a percentage, so
+# the valid values go from 0 to 100.
+effect.bleeding-modifier: 10
+
+# This value determines how much health a regenrating entity
+# should gain each turn. It is treated as a percentage, so
+# the valid values go from 0 to 100.
+effect.regen-modifier: 5

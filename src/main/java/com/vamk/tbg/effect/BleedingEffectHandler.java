@@ -1,5 +1,7 @@
 package com.vamk.tbg.effect;
 
+import com.vamk.tbg.config.Config;
+import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.util.LogUtil;
 
@@ -9,17 +11,18 @@ import java.util.logging.Logger;
 public class BleedingEffectHandler implements StatusEffectHandler {
     private static final Logger LOGGER = LogUtil.getLogger(BleedingEffectHandler.class);
     private final Random random;
+    private final Config config;
 
-    public BleedingEffectHandler() {
+    public BleedingEffectHandler(Config config) {
         this.random = new Random();
+        this.config = config;
     }
 
     @Override
     public void applyTo(Entity entity) {
         if (!entity.hasEffect(StatusEffect.BLEEDING)) return;
 
-        // TODO make this configurable
-        int damage = this.random.nextInt(Math.max((int) (entity.getMaxHealth() * 0.05), 1));
+        int damage = this.random.nextInt(1, (int) (entity.getMaxHealth() * this.config.get(Keys.BLEEDING_MODIFIER)));
         entity.damage(damage);
         LOGGER.info("Entity %d loses %d health to bleeding".formatted(entity.getId(), damage));
     }
