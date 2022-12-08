@@ -7,7 +7,7 @@ public final class Keys {
     public static final MovePresetsKey MOVE_PRESETS = new MovePresetsKey("game.move-presets");
     public static final ConfigKey<String> BACKUP_LOCATION = ConfigKey.stringKey("game-state-backup.location");
     public static final ConfigKey<Double> BLEEDING_MODIFIER = new PercentageKey("effect.bleeding-modifier");
-    public static final ConfigKey<Double> REGEN_KEY = new PercentageKey("effect.regen-modifier");
+    public static final ConfigKey<Double> REGEN_MODIFIER = new PercentageKey("effect.regen-modifier");
 
     private Keys() {}
 }

@@ -22,7 +22,7 @@ public class RegenEffectHandler implements StatusEffectHandler {
     public void applyTo(Entity entity) {
         if (!entity.hasEffect(StatusEffect.REGENERATION)) return;
 
-        int hp = this.random.nextInt(1, (int) (entity.getMaxHealth() * this.config.get(Keys.REGEN_KEY)));
+        int hp = this.random.nextInt(1, (int) (entity.getMaxHealth() * this.config.get(Keys.REGEN_MODIFIER)));
         entity.heal(hp);
         LOGGER.info("Entity %d gains %d health thanks to regeneration".formatted(entity.getId(), hp));
     }
