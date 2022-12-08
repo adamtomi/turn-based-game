@@ -3,7 +3,7 @@ package com.vamk.tbg.config;
 import java.util.Arrays;
 import java.util.List;
 
-final class MovePresetsKey extends ListKey<List<String>> {
+final class MovePresetsKey extends AbstractConfigKey<List<List<String>>> {
     private static final String PREFIX = "[";
     private static final String SUFFIX = "]";
 
@@ -12,11 +12,19 @@ final class MovePresetsKey extends ListKey<List<String>> {
     }
 
     @Override
-    public List<String> mapSingle(String value) {
-        if (value.startsWith(PREFIX)) value = value.substring(1);
-        if (value.endsWith(SUFFIX)) value = value.substring(0, value.length() - 1);
+    public List<List<String>> map(String value) {
+        String[] entries = value.split(",");
+        return Arrays.stream(entries)
+                .map(String::trim)
+                .map(this::processInvididual)
+                .toList();
+    }
 
-        return Arrays.stream(value.split(" "))
+    private List<String> processInvididual(String entry) {
+        if (entry.startsWith(PREFIX)) entry = entry.substring(1);
+        if (entry.endsWith(SUFFIX)) entry = entry.substring(0, entry.length() - 1);
+
+        return Arrays.stream(entry.split(" "))
                 .map(String::trim)
                 .toList();
     }
