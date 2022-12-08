@@ -1,7 +1,13 @@
 package com.vamk.tbg.game;
 
-import com.vamk.tbg.combat.CombatRegistry;
+import com.vamk.tbg.combat.BuffMove;
+import com.vamk.tbg.combat.CureMove;
+import com.vamk.tbg.combat.DebuffMove;
+import com.vamk.tbg.combat.GenericAttackMove;
+import com.vamk.tbg.combat.HealAllMove;
+import com.vamk.tbg.combat.HealMove;
 import com.vamk.tbg.combat.Move;
+import com.vamk.tbg.combat.SplashDamageMove;
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.effect.BleedingEffectHandler;
@@ -19,15 +25,19 @@ import com.vamk.tbg.util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
+    private final Map<String, Move> moves;
     private final SignalDispatcher dispatcher;
     private final Config config;
-    private final CombatRegistry combatRegistry;
     private final Entity.Factory entityFactory;
     private final List<Entity> entities;
     private final Set<StatusEffectHandler> effectHandlers;
@@ -35,10 +45,20 @@ public class Game {
     private boolean importedState = false;
 
     public Game(SignalDispatcher dispatcher, Config config) {
+        // Load all moves into a map
+        this.moves = Stream.of(
+                new BuffMove(),
+                new CureMove(),
+                new DebuffMove(),
+                new GenericAttackMove(),
+                new HealAllMove(),
+                new HealMove(),
+                new SplashDamageMove()
+        ).collect(Collectors.toMap(Move::getId, Function.identity()));
+
         this.dispatcher = dispatcher;
         this.config = config;
-        this.combatRegistry = new CombatRegistry();
-        this.entityFactory = new Entity.Factory(dispatcher, this.combatRegistry);
+        this.entityFactory = new Entity.Factory(dispatcher, this.moves);
         this.entities = new ArrayList<>();
         this.effectHandlers = Set.of(new BleedingEffectHandler(config), new RegenEffectHandler(config));
     }
@@ -96,7 +116,7 @@ public class Game {
 
         for (List<String> preset : configured) {
             List<Move> moves = preset.stream()
-                    .map(this.combatRegistry::findMove)
+                    .map(this.moves::get)
                     .filter(Objects::nonNull) // If the entry is null, then the specified ID was invalid
                     .toList();
 

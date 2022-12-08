@@ -1,7 +1,6 @@
 package com.vamk.tbg.game;
 
 import com.vamk.tbg.combat.Move;
-import com.vamk.tbg.combat.CombatRegistry;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
@@ -178,12 +177,12 @@ public class Entity implements Tickable {
     static final class Factory {
         private static final Logger LOGGER = LogUtil.getLogger(Factory.class);
         private final SignalDispatcher dispatcher;
-        private final CombatRegistry combatRegistry;
+        private final Map<String, Move> moves;
         private final AtomicInteger nextId;
 
-        Factory(SignalDispatcher dispatcher, CombatRegistry combatRegistry) {
+        Factory(SignalDispatcher dispatcher, Map<String, Move> moves) {
             this.dispatcher = dispatcher;
-            this.combatRegistry = combatRegistry;
+            this.moves = moves;
             this.nextId = new AtomicInteger(0);
         }
 
@@ -195,7 +194,7 @@ public class Entity implements Tickable {
 
         Entity create(EntitySnapshot snapshot) {
             List<Move> moves = snapshot.moves().stream()
-                    .map(this.combatRegistry::findMove)
+                    .map(this.moves::get)
                     .toList();
             Entity entity =  new Entity(snapshot.id(), snapshot.hostile(), snapshot.health(), snapshot.maxHealth(), moves, this.dispatcher);
             LOGGER.info("Restored entity %s".formatted(entity));
