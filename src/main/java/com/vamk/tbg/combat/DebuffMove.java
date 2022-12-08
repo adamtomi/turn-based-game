@@ -1,22 +1,28 @@
 package com.vamk.tbg.combat;
 
+import com.vamk.tbg.config.Config;
+import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static com.vamk.tbg.util.RandomUtil.chance;
 
 public class DebuffMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(DebuffMove.class);
-    private static final int BLEEDING_CHANCE = 50;
-    private static final int FROZEN_CHANCE = 10;
-    private static final int CONFUSED_CHANCE = 5;
+    private static final EnumSet<StatusEffect> POTENTIAL_EFFECTS = EnumSet.of(
+            StatusEffect.BLEEDING, StatusEffect.CONFUSED, StatusEffect.FROZEN
+    );
+    private final Config config;
 
-    public DebuffMove() {
+    public DebuffMove(Config config) {
         super("DEBUFF", true);
+        this.config = config;
     }
 
     @Override
@@ -26,19 +32,15 @@ public class DebuffMove extends AbstractMove {
         target.damage(dmg);
         LOGGER.info("Entity %d is lost %d hp thanks to %d".formatted(target.getId(), dmg, context.source().getId()));
 
-        if (chance(BLEEDING_CHANCE)) {
-            target.applyEffect(StatusEffect.BLEEDING);
-            LOGGER.info("Entity %d is also bleeding now".formatted(target.getId()));
+        Map<String, Integer> chances = this.config.get(Keys.DEBUFF_CHANCES);
+        POTENTIAL_EFFECTS.forEach(x -> testAndApply(chances, x, target));
+    }
+
+    private void testAndApply(Map<String, Integer> chances, StatusEffect effect, Entity target) {
+        int chance = chances.get(effect.name());
+        if (chance(chance)) { // Isn't this just fabulous?
+            target.applyEffect(effect);
+            LOGGER.info("Applying effect %s to entity".formatted(effect));
         }
-
-         if (chance(FROZEN_CHANCE)) {
-             target.applyEffect(StatusEffect.FROZEN);
-             LOGGER.info("Entity %d is also frozen now".formatted(target.getId()));
-         }
-
-         if (chance(CONFUSED_CHANCE)) {
-             target.applyEffect(StatusEffect.CONFUSED);
-             LOGGER.info("Entity %d is also confused now".formatted(target.getId()));
-         }
     }
 }

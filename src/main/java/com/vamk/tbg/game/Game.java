@@ -3,7 +3,7 @@ package com.vamk.tbg.game;
 import com.vamk.tbg.combat.BuffMove;
 import com.vamk.tbg.combat.CureMove;
 import com.vamk.tbg.combat.DebuffMove;
-import com.vamk.tbg.combat.GenericAttackMove;
+import com.vamk.tbg.combat.DamageMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.HealMove;
 import com.vamk.tbg.combat.Move;
@@ -47,13 +47,13 @@ public class Game {
     public Game(SignalDispatcher dispatcher, Config config) {
         // Load all moves into a map
         this.moves = Stream.of(
-                new BuffMove(),
+                new BuffMove(config),
                 new CureMove(),
-                new DebuffMove(),
-                new GenericAttackMove(),
-                new HealAllMove(),
-                new HealMove(),
-                new SplashDamageMove()
+                new DebuffMove(config),
+                new DamageMove(config),
+                new HealAllMove(config),
+                new HealMove(config),
+                new SplashDamageMove(config)
         ).collect(Collectors.toMap(Move::getId, Function.identity()));
 
         this.dispatcher = dispatcher;

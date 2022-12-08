@@ -1,3 +1,8 @@
+# +---------------------------------------------------------------------+ #
+# |                                                                     | #
+# |                       G A M E - G E N E R A L                       | #
+# |                                                                     | #
+# +---------------------------------------------------------------------+ #
 # You may use this configuration file to change
 # certain aspects of the game.
 # NOTE: This file is read line by line. Empty lines
@@ -20,13 +25,18 @@ game.move-count: 4
 # entries will be read, validated and assigned to a random
 # (hostile/friendly) entity. You can look at classes in the
 # combat package for move names.
-game.move-presets: [BUFF HEAL_ALL DEBUFF GENERIC_ATTACK],[HEAL CURE DEBUFF SPLASH_DAMAGE]
+game.move-presets: [BUFF HEAL_ALL DEBUFF DAMAGE],[HEAL CURE DEBUFF SPLASH_DAMAGE]
 
 # If the game is forcibly shut down (pressing the x
 # button, before the game would end on its own), a
 # backup will be generated at this location.
 game-state-backup.location: backup.dat
 
+# +---------------------------------------------------------------------+ #
+# |                                                                     | #
+# |                             E F F E C T                             | #
+# |                                                                     | #
+# +---------------------------------------------------------------------+ #
 # This value determines how much health a bleeding entity
 # should lose each turn. It is treated as a percentage, so
 # the valid values go from 0 to 100.
@@ -36,3 +46,51 @@ effect.bleeding-modifier: 5
 # should gain each turn. It is treated as a percentage, so
 # the valid values go from 0 to 100.
 effect.regen-modifier: 1
+
+# +---------------------------------------------------------------------+ #
+# |                                                                     | #
+# |                               M O V E                               | #
+# |                                                                     | #
+# +---------------------------------------------------------------------+ #
+# Configure effect chances for the buff move. The numbers
+# are treated as percentages.
+move.buff: REGENERATION=40, LIFESTEAL=10, CAFFEINATED=5
+
+# Configure effect chances for thede buff move. The numbers
+# are treated as percentages.
+move.debuff: BLEEDING=50, FROZEN=10, CONFUSED=5
+
+# Configure the damage moves. The first two values determine
+# the min and maximum damage. The actual damage will be a
+# random number between max_health/min and max_health/max.
+#
+# If the attacking entity has lifesteal, it'll gain some
+# health back. Lifesteal-modifier is responsible for
+# determining the amount of health it'll get back.
+# The damage caused by the entity will be devided by
+# the provided number to calculate the amount.
+#
+# This attack has a low (by default) chance to apply
+# bleeding to the target entity. The last value determines
+# the chance of that happening. The number is treated as
+# a percentage.
+move.damage: min=10, max=5, lifesteal-modifier=5, bleeding-chance=7
+
+# Both values are treated as precentages and will be
+# calculated based on the entities' max health. All
+# applies to all entities but the source, whereas
+# source (obviously) applies only to the source.
+move.heal-all: all=10, source=10
+
+# Configure the amount of health entities can gain
+# back. The amount is calculated by taking a random
+# value between max_health/min and max_health/max.
+move.heal: min=15, max=10
+
+# The damaged is calculated in a similar fashion as
+# with move.heal-apply. This move can set an entity
+# bleeding as well, but no other effects are allowed
+# (otherwise it would be to OP).
+move.splash-damage: all=15, source=12, bleeding-chance=30
+
+

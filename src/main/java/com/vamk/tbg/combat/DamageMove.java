@@ -1,37 +1,45 @@
 package com.vamk.tbg.combat;
 
+import com.vamk.tbg.config.Config;
+import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
-public class GenericAttackMove extends AbstractMove {
-    private static final Logger LOGGER = LogUtil.getLogger(GenericAttackMove.class);
-    private final transient Random random;
+import static com.vamk.tbg.util.RandomUtil.chance;
 
-    public GenericAttackMove() {
-        super("GENERIC_ATTACK", true);
+public class DamageMove extends AbstractMove {
+    private static final Logger LOGGER = LogUtil.getLogger(DamageMove.class);
+    private final Random random;
+    private final Config config;
+
+    public DamageMove(Config config) {
+        super("DAMAGE", true);
         this.random = new Random();
+        this.config = config;
     }
 
     @Override
     public void perform(MoveContext context) {
         Entity target = context.target();
         Entity source = context.source();
-        int dmg = this.random.nextInt(target.getMaxHealth() / 10, target.getMaxHealth() / 5);
+        Map<String, Integer> config = this.config.get(Keys.DAMAGE_CONFIG);
+
+        int dmg = this.random.nextInt(target.getMaxHealth() / config.get("min"), target.getMaxHealth() / config.get("max"));
         target.damage(dmg);
         LOGGER.info("Dealing %d damage to entity: %d".formatted(dmg, target.getId()));
         if (source.hasEffect(StatusEffect.LIFESTEAL)) {
-            int hp = dmg / 5;
+            int hp = dmg / config.get("lifesteal-modifier");
             source.heal(hp);
             LOGGER.warning("Entity %d gains %d HP due to lifesteal".formatted(source.getId(), hp));
         }
 
-        int bleedingChance = this.random.nextInt(100);
-        if (bleedingChance < 10) {
+        if (chance(config.get("bleeding-chance"))) {
             LOGGER.info("Amazing, entity %d is now bleeding...".formatted(target.getId()));
             target.applyEffect(StatusEffect.BLEEDING);
         }

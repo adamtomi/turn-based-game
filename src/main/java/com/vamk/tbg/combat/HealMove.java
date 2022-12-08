@@ -1,39 +1,36 @@
 package com.vamk.tbg.combat;
 
-import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.config.Config;
+import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
+import com.vamk.tbg.util.RandomUtil;
 
+import java.util.Map;
 import java.util.logging.Logger;
-
-import static com.vamk.tbg.util.RandomUtil.chance;
 
 public class HealMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealMove.class);
-    private static final int REGENERATION_CHANCE = 15;
-    private static final int LIFESTEAL_CHANCE = 10;
+    private final Config config;
 
-    public HealMove() {
+    public HealMove(Config config) {
         super("HEAL", false);
+        this.config = config;
     }
 
     @Override
     public void perform(MoveContext context) {
         Entity source = context.source();
         Entity target = context.target();
-        target.heal();
+        Map<String, Integer> config = this.config.get(Keys.HEAL);
+
+        int hp = RandomUtil.random(target.getMaxHealth() / config.get("min"), target.getMaxHealth() / config.get("max"));
+        target.heal(hp);
+
         LOGGER.info("Entity %d has been healed by %d".formatted(target.getId(), source.getId()));
 
-        if (chance(REGENERATION_CHANCE)) {
-            target.applyEffect(StatusEffect.REGENERATION);
-            LOGGER.info("They also got regeneration now");
-        }
 
-        if (chance(LIFESTEAL_CHANCE)) {
-            target.applyEffect(StatusEffect.LIFESTEAL);
-            LOGGER.info("They also got lifesteal now");
-        }
     }
 
     @Override
