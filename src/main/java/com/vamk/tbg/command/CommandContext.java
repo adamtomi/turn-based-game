@@ -24,7 +24,9 @@ public class CommandContext {
 
         String arg = this.args.remove();
         Object result = mapper.map(arg);
-        if (!type.isInstance(result)) throw new CommandException("Argument %s cannot be converted to type %s".formatted(arg, type.getName()));
+        // This check is here just in case, but mappers
+        // are expected to take care of invalid input.
+        if (!type.isInstance(result)) throw new RuntimeException("Failed to convert argument %s to type %s".formatted(arg, type.getName()));
 
         return type.cast(result);
     }
