@@ -1,46 +1,26 @@
 package com.vamk.tbg.command;
 
-import com.vamk.tbg.command.mapper.ArgumentMapper;
+public class Argument implements CommandPart {
+    private final String name;
+    private final String description;
 
-import static java.util.Objects.requireNonNull;
-
-public record Argument(String name, String description, boolean required, ArgumentMapper<?> mapper) {
-
-    public static Builder optional(String name) {
-        return new Builder(name, false);
+    public Argument(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public static Builder required(String name) {
-        return new Builder(name, true);
+    @Override
+    public String getName() {
+        return this.name;
     }
 
-    public static final class Builder {
-        private final String name;
-        private final boolean required;
-        private String description;
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
 
-        private ArgumentMapper<?> mapper;
-
-        private Builder(String name, boolean required) {
-            this.name = name;
-            this.required = required;
-        }
-
-        public Builder withDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder useMapper(ArgumentMapper<?> mapper) {
-            this.mapper = mapper;
-            return this;
-        }
-
-        public Argument build() {
-            requireNonNull(this.description, "description cannot be null");
-            requireNonNull(this.mapper, "mapper cannot be null");
-
-            return new Argument(this.name, this.description, this.required, this.mapper);
-        }
+    @Override
+    public String toString() {
+        return "Argument { name=%s, description=%s }".formatted(this.name, this.description);
     }
 }

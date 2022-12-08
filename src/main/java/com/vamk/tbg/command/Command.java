@@ -1,53 +1,31 @@
 package com.vamk.tbg.command;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
+public abstract class Command implements CommandPart {
+    private final String name;
+    private final String description;
+    private final List<Argument> arguments;
 
-public interface Command extends CommandExecutable {
-
-    String getName();
-
-    String getDescription();
-
-    List<Argument> getArguments();
-
-    static Builder forName(String name) {
-        return new Builder(name);
+    protected Command(String name, String description, Argument... arguments) {
+        this.name = name;
+        this.description = description;
+        this.arguments = List.of(arguments);
     }
 
-    final class Builder {
-        private final String name;
-        private String description;
-        private List<Argument> arguments;
-        private CommandExecutable executor;
-
-        private Builder(String name) {
-            this.name = name;
-        }
-
-        public Builder withDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder withArguments(Argument.Builder... arguments) {
-            this.arguments = Arrays.stream(arguments).map(Argument.Builder::build).toList();
-            return this;
-        }
-
-        public Builder execute(CommandExecutable executor) {
-            this.executor = executor;
-            return this;
-        }
-
-        public Command build() {
-            requireNonNull(this.description, "description cannot be null");
-            requireNonNull(this.executor, "executor cannot be null");
-
-            List<Argument> arguments = this.arguments == null ? List.of() : this.arguments;
-            return new CommandImpl(this.name, this.description, arguments, this.executor);
-        }
+    @Override
+    public String getName() {
+        return this.name;
     }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    public List<Argument> getArguments() {
+        return this.arguments;
+    }
+
+    public abstract void run(CommandContext context) throws CommandException;
 }
