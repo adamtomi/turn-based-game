@@ -30,4 +30,16 @@ public final class RandomUtil {
 
         return RANDOM.nextInt(1, 100) <= chance;
     }
+
+    /**
+     * Generates a random value between the two
+     * provided numbers.
+     *
+     * @param lbound The lower bound
+     * @param ubound The upper bound
+     * @see java.util.Random#nextInt(int, int)
+     */
+    public static int random(int lbound, int ubound) {
+        return RANDOM.nextInt(lbound, ubound + 1);
+    }
 }
