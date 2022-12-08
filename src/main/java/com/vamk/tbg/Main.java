@@ -35,7 +35,7 @@ public class Main {
         private void launch() {
             try {
                 this.config.load();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 LOGGER.severe("Failed to load configuration, exiting");
                 ex.printStackTrace();
                 System.exit(-1);
