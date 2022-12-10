@@ -105,8 +105,14 @@ public class ButtonContainer extends JPanel {
         Move move = this.currentEntity.getMoves().get(idx);
         this.move = move;
         for (Map.Entry<Entity, JButton> entry : this.entityButtons.entrySet()) {
-            // If the move is not applicable to this entity, disable the button
-            entry.getValue().setEnabled(move.isApplicableTo(entry.getKey()));
+            /*
+             * Prevent user from performing attacks on friendly entities
+             * as well as using moves that aren't applicable to the
+             * targeted entity.
+             */
+            boolean btnStatus = (this.currentEntity.isEnemyOf(entry.getKey()) == move.isAttack())
+                    && (move.isApplicableTo(entry.getKey()));
+            entry.getValue().setEnabled(btnStatus);
         }
     }
 }
