@@ -1,8 +1,10 @@
 package com.vamk.tbg.command;
 
+import com.vamk.tbg.command.impl.DamageCommand;
 import com.vamk.tbg.command.impl.HealCommand;
 import com.vamk.tbg.command.impl.KillCommand;
 import com.vamk.tbg.command.impl.ListCommand;
+import com.vamk.tbg.command.impl.RemoveEffectCommand;
 import com.vamk.tbg.command.impl.SetEffectCommand;
 import com.vamk.tbg.command.mapper.ArgumentMapper;
 import com.vamk.tbg.command.mapper.EntityMapper;
@@ -11,6 +13,7 @@ import com.vamk.tbg.command.mapper.StatusEffectMapper;
 import com.vamk.tbg.game.Game;
 import com.vamk.tbg.util.CollectionUtil;
 import com.vamk.tbg.util.LogUtil;
+import com.vamk.tbg.util.logger.LogFormatter;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -18,6 +21,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.StringJoiner;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -27,10 +31,19 @@ public class CommandManager {
      * log into files instead of to console, however, these messages
      * should always get printed to the console.
      */
-    private static final Logger LOGGER = Logger.getLogger("[CommandListener]");
+    private static final Logger LOGGER;
     private final Map<Class<?>, ArgumentMapper<?>> knownMappers;
     private final Map<String, Command> knownCommands;
     private boolean listening = true;
+
+    static {
+        Logger result = Logger.getAnonymousLogger();
+        result.setUseParentHandlers(false);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new LogFormatter("%s\n", (format, record) -> format.formatted(record.getMessage())));
+        result.addHandler(handler);
+        LOGGER = result;
+    }
 
     public CommandManager(Game game) {
         this.knownMappers = CollectionUtil.mapOf(
@@ -41,9 +54,11 @@ public class CommandManager {
         );
         this.knownCommands = CollectionUtil.mapOf(
                 Command::getName,
+                new DamageCommand(),
                 new HealCommand(),
                 new KillCommand(),
                 new ListCommand(game),
+                new RemoveEffectCommand(),
                 new SetEffectCommand()
         );
     }
@@ -82,10 +97,9 @@ public class CommandManager {
         CommandContext context = new CommandContext(this.knownMappers, args, x -> LOGGER.info("[%s]: %s".formatted(command.getName(), x)));
         try {
             command.run(context);
-        } catch (Exception ex) {
-            LOGGER.warning(ex.getMessage());
-            LOGGER.warning("\n");
-            LOGGER.warning(getFullHelp(command));
+        } catch (CommandException ex) {
+            LOGGER.info(ex.getMessage());
+            LOGGER.info(getFullHelp(command));
 
         }
     }

@@ -25,7 +25,9 @@ public class CommandContext {
         ArgumentMapper<?> mapper = this.knownMappers.get(type);
         if (mapper == null) throw new CommandException("Unrecognized argument type: %s".formatted(type.getName()));
 
-        String arg = this.args.remove();
+        String arg = this.args.poll();
+        if (arg == null) throw new CommandException("Invalid command syntax, at least one more %s is required.".formatted(type.getName()));
+
         Object result = mapper.map(arg);
         // This check is here just in case, but mappers
         // are expected to take care of invalid input.

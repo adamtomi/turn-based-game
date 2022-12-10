@@ -123,6 +123,11 @@ public class Entity implements Tickable {
         return Map.copyOf(this.activeEffects);
     }
 
+    public void removeEffect(StatusEffect effect) {
+        this.activeEffects.remove(effect);
+        this.dispatcher.dispatch(new EffectsUpdatedSignal(this));;
+    }
+
     public void cure() {
         Set<StatusEffect> negativeEffects = this.activeEffects.keySet()
                 .stream()
@@ -148,10 +153,7 @@ public class Entity implements Tickable {
             else entry.setValue(rounds);
         }
 
-        if (!expired.isEmpty()) {
-            expired.forEach(this.activeEffects::remove);
-            this.dispatcher.dispatch(new EffectsUpdatedSignal(this));
-        }
+        expired.forEach(this::removeEffect);
     }
 
     @Override
