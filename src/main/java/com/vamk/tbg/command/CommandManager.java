@@ -13,7 +13,7 @@ import com.vamk.tbg.command.mapper.StatusEffectMapper;
 import com.vamk.tbg.game.Game;
 import com.vamk.tbg.util.CollectionUtil;
 import com.vamk.tbg.util.LogUtil;
-import com.vamk.tbg.util.logger.LogFormatter;
+import com.vamk.tbg.util.LogFormatter;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.StringJoiner;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -31,19 +30,10 @@ public class CommandManager {
      * log into files instead of to console, however, these messages
      * should always get printed to the console.
      */
-    private static final Logger LOGGER;
+    private static final Logger LOGGER = LogUtil.withFormatter(Logger.getAnonymousLogger(), new LogFormatter("%s\n", (format, record) -> format.formatted(record.getMessage())));
     private final Map<Class<?>, ArgumentMapper<?>> knownMappers;
     private final Map<String, Command> knownCommands;
     private boolean listening = true;
-
-    static {
-        Logger result = Logger.getAnonymousLogger();
-        result.setUseParentHandlers(false);
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(new LogFormatter("%s\n", (format, record) -> format.formatted(record.getMessage())));
-        result.addHandler(handler);
-        LOGGER = result;
-    }
 
     public CommandManager(Game game) {
         this.knownMappers = CollectionUtil.mapOf(

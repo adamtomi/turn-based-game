@@ -1,4 +1,4 @@
-package com.vamk.tbg.util.logger;
+package com.vamk.tbg.util;
 
 import java.util.function.BiFunction;
 import java.util.logging.LogRecord;

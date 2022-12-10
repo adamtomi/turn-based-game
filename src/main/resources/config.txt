@@ -6,16 +6,6 @@
 # In dev mode the user has access to a bunch of commands
 # that can be used for example to kill, heal or list entities.
 general.dev-mode: true
-# Controls how logging should be done. Three options are available:
-# console -> log messages to the console
-# file -> log messages to a file
-# none -> don't log messages
-## DOESN'T WORK AT THE MOMENT
-general.log-mode: file
-# If log-mode is set to file, all messages will be logged
-# into this file.
-## DOESN'T WORK AT THE MOMENT
-general.log-file: turn_based_game.log
 
 # +---------------------------------------------------------------------+ #
 # |                                                                     | #

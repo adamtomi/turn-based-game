@@ -1,7 +1,5 @@
 package com.vamk.tbg.util;
 
-import com.vamk.tbg.util.logger.LogFormatter;
-
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
@@ -15,16 +13,20 @@ public final class LogUtil {
     private LogUtil() {}
 
     public static Logger getLogger(Class<?> clazz) {
-        Logger logger = Logger.getLogger(className(clazz));
+        Logger logger = Logger.getLogger(loggerName(clazz));
+        return withFormatter(logger, FORMATTER);
+    }
+
+    public static Logger withFormatter(Logger logger, LogFormatter formatter) {
         logger.setUseParentHandlers(false);
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(FORMATTER);
+        handler.setFormatter(formatter);
         logger.addHandler(handler);
 
         return logger;
     }
 
-    private static String className(Class<?> clazz) {
+    private static String loggerName(Class<?> clazz) {
         String[] path = clazz.getName().split("\\.");
         return path[path.length - 1];
     }
