@@ -189,8 +189,4 @@ public class Game {
         // CAFFEINATED grants another turn
         if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
     }
-
-    public List<Entity> getEntities() {
-        return List.copyOf(this.entities);
-    }
 }

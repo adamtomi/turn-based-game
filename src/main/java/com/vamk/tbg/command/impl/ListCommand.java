@@ -20,10 +20,10 @@ public class ListCommand extends Command {
 
     @Override
     public void run(CommandContext context) {
-        String entities = this.game.getEntities().stream()
+        /*String entities = this.game.getEntities().stream()
                 .map(Entity::toString)
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("\n"));*/
 
-        context.respond("Listing all entities... \n%s".formatted(entities));
+        //context.respond("Listing all entities... \n%s".formatted(entities));
     }
 }

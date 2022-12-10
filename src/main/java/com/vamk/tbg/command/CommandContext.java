@@ -4,14 +4,17 @@ import com.vamk.tbg.command.mapper.ArgumentMapper;
 
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 public class CommandContext {
     private final Map<Class<?>, ArgumentMapper<?>> knownMappers;
     private final Queue<String> args;
+    private final Consumer<String> messageDelivery;
 
-    public CommandContext(Map<Class<?>, ArgumentMapper<?>> knownMappers, Queue<String> args) {
+    public CommandContext(Map<Class<?>, ArgumentMapper<?>> knownMappers, Queue<String> args, Consumer<String> messageDelivery) {
         this.knownMappers = knownMappers;
         this.args = args;
+        this.messageDelivery = messageDelivery;
     }
 
     public int remaining() {
@@ -31,8 +34,7 @@ public class CommandContext {
         return type.cast(result);
     }
 
-    // TODO actually implement this
     public void respond(String message) {
-
+        this.messageDelivery.accept(message);
     }
 }
