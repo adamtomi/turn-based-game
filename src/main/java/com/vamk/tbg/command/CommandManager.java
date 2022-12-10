@@ -12,8 +12,8 @@ import com.vamk.tbg.command.mapper.IntMapper;
 import com.vamk.tbg.command.mapper.StatusEffectMapper;
 import com.vamk.tbg.game.Game;
 import com.vamk.tbg.util.CollectionUtil;
-import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.LogFormatter;
+import com.vamk.tbg.util.LogUtil;
 
 import java.util.Arrays;
 import java.util.LinkedList;
