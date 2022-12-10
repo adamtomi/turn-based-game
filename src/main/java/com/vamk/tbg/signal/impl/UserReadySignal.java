@@ -1,16 +1,17 @@
 package com.vamk.tbg.signal.impl;
 
+import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
 public class UserReadySignal implements Signal {
     private static final String ID = "USER_READY";
     private final Entity target;
-    private final int moveIndex;
+    private final Move move;
 
-    public UserReadySignal(Entity target, int moveIndex) {
+    public UserReadySignal(Entity target, Move move) {
         this.target = target;
-        this.moveIndex = moveIndex;
+        this.move = move;
     }
 
     @Override
@@ -22,12 +23,12 @@ public class UserReadySignal implements Signal {
         return this.target;
     }
 
-    public int getMoveIndex() {
-        return this.moveIndex;
+    public Move getMove() {
+        return this.move;
     }
 
     @Override
     public String toString() {
-        return "UserReadySignal { target=%s, moveIndex=%d }".formatted(this.target, this.moveIndex);
+        return "UserReadySignal { target=%s, move=%s }".formatted(this.target, this.move.getId());
     }
 }

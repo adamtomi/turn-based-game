@@ -9,7 +9,6 @@ import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.signal.impl.UserReadySignal;
-import com.vamk.tbg.util.Tickable;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -21,19 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ButtonContainer extends JPanel implements Tickable {
+public class ButtonContainer extends JPanel {
     @Serial
     private static final long serialVersionUID = -1848838910296723317L;
     private final SignalDispatcher dispatcher;
     private final Config config;
-    private final Map<Integer, JButton> entityButtons;
-    private final List<JButton> moveButtons;
-    private int moveIdx;
+    private final Map<Entity, JButton> entityButtons;
+    private final List<MoveButton> moveButtons;
+    private Entity currentEntity;
+    private Move move;
 
     public ButtonContainer(SignalDispatcher dispatcher, Config config) {
         this.dispatcher = dispatcher;
         this.config = config;
-        this.moveIdx = 3;
         this.entityButtons = new HashMap<>();
         this.moveButtons = new ArrayList<>();
 
@@ -50,11 +49,11 @@ public class ButtonContainer extends JPanel implements Tickable {
         for (Entity entity : signal.getEntities()) {
             JButton button = new JButton("%s entity %d".formatted(entity.isHostile() ? "Hostile" : "Friendly", entity.getId()));
 
-            button.addActionListener(event -> this.dispatcher.dispatch(new UserReadySignal(entity, this.moveIdx)));
+            button.addActionListener(event -> this.entityButtonClicked(entity));
 
             button.setVisible(true);
             entityPanel.add(button);
-            this.entityButtons.put(entity.getId(), button);
+            this.entityButtons.put(entity, button);
         }
 
         add(entityPanel);
@@ -64,15 +63,9 @@ public class ButtonContainer extends JPanel implements Tickable {
         int moveCount = this.config.get(Keys.MOVE_COUNT);
         JPanel movePanel = new JPanel();
         for (int i = 0; i < moveCount; i++) {
-            JButton button = new JButton("Move %d".formatted(i));
-
-            int finalI = i;
-            button.addActionListener(e -> ButtonContainer.this.moveIdx = finalI);
-
-            button.setEnabled(false);
-            button.setVisible(true);
+            MoveButton button = new MoveButton(i, this::moveButtonClicked);
             this.moveButtons.add(button);
-            movePanel.add(button);
+            movePanel.add(button.unwrap());
         }
 
         add(movePanel);
@@ -80,29 +73,40 @@ public class ButtonContainer extends JPanel implements Tickable {
 
     private void onEntityDeath(EntityDeathSignal signal) {
         Entity entity = signal.getEntity();
-        JButton button = this.entityButtons.remove(entity.getId());
+        JButton button = this.entityButtons.remove(entity);
         if (button == null) return;
 
         button.setEnabled(false);
     }
 
     private void onEntityPlays(EntityPlaysSignal signal) {
-        tick();
-        this.moveButtons.forEach(x -> x.setEnabled(signal.isUserControlled()));
-        updateButtonsFor(signal.getEntity());
-    }
+        Entity entity = signal.getEntity();
+        boolean userControlled = signal.isUserControlled();
 
-    private void updateButtonsFor(Entity entity) {
+        this.currentEntity = entity;
+        updateUI();
+
         for (int i = 0; i < this.moveButtons.size(); i++) {
-            JButton button = this.moveButtons.get(i);
+            MoveButton button = this.moveButtons.get(i);
             Move move = entity.getMoves().get(i);
             button.setText(move.getId());
+
+            button.setEnabled(userControlled);
         }
     }
 
-    @Override
-    public void tick() {
-        this.moveIdx = 3;
-        updateUI();
+    private void entityButtonClicked(Entity target) {
+        if (this.move == null) return;
+
+        this.dispatcher.dispatch(new UserReadySignal(target, this.move));
+    }
+
+    private void moveButtonClicked(int idx) {
+        Move move = this.currentEntity.getMoves().get(idx);
+        this.move = move;
+        for (Map.Entry<Entity, JButton> entry : this.entityButtons.entrySet()) {
+            // If the move is not applicable to this entity, disable the button
+            entry.getValue().setEnabled(move.isApplicableTo(entry.getKey()));
+        }
     }
 }

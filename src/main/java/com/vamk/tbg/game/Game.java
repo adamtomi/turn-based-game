@@ -169,7 +169,7 @@ public class Game {
 
             if (userControlled) {
                 UserReadySignal signal = this.dispatcher.awaitSignal(UserReadySignal.class);
-                move = entity.getMoves().get(signal.getMoveIndex());
+                move = signal.getMove();
                 target = signal.getTarget();
             } else {
                 move = RandomUtil.pickRandom(entity.getMoves());
