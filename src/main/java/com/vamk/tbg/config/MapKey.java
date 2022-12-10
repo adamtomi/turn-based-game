@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public abstract class MapKey<T> extends AbstractConfigKey<Map<String, T>> {
-    /* This value disables size checks */
-    private static final int NONE = -1;
     /* Separates key-value pairs */
     private static final String SEPARATOR = ",";
     /* Separates a single key and value */
@@ -20,17 +18,13 @@ public abstract class MapKey<T> extends AbstractConfigKey<Map<String, T>> {
         this.expectedSize = expectedSize;
     }
 
-    public MapKey(String path) {
-        this(path, NONE);
-    }
-
     @Override
     public Map<String, T> map(String value) {
         List<String> values = Arrays.stream(value.split(SEPARATOR)).map(String::trim)
                 .toList();
 
         int size = values.size();
-        if (size != this.expectedSize && this.expectedSize != NONE) throw new IllegalArgumentException("Expected %d elements, got %d".formatted(this.expectedSize, size));
+        if (size != this.expectedSize) throw new IllegalArgumentException("Expected %d elements, got %d".formatted(this.expectedSize, size));
 
         Map<String, T> result = new HashMap<>();
         for (String each : values) {
@@ -51,10 +45,6 @@ public abstract class MapKey<T> extends AbstractConfigKey<Map<String, T>> {
         public Simple(String path, int expectedSize, Function<String, T> mapper) {
             super(path, expectedSize);
             this.mapper = mapper;
-        }
-
-        public Simple(String path, Function<String, T> mapper) {
-            this(path, NONE, mapper);
         }
 
         @Override

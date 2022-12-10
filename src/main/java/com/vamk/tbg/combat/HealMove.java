@@ -29,8 +29,6 @@ public class HealMove extends AbstractMove {
         target.heal(hp);
 
         LOGGER.info("Entity %d has been healed by %d".formatted(target.getId(), source.getId()));
-
-
     }
 
     @Override

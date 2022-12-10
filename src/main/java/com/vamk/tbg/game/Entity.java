@@ -54,7 +54,7 @@ public class Entity implements Tickable {
      * "that" entity. This method takes the CONFUSED
      * status effect into consideration.
      *
-     * NOTE: This relationship is not bi-directional.
+     * NOTE: This relationship is not bidirectional.
      * This entity might be hostile towards "that"
      * entity, but that doesn't mean it's true
      * the other way around.

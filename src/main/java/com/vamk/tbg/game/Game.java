@@ -132,14 +132,14 @@ public class Game {
 
     private void onEntityDeath(EntityDeathSignal signal) {
         Entity dead = signal.getEntity();
-        LOGGER.info("Entity %d died, removing it from the board...".formatted(dead.getId()));
+        LOGGER.info("Entity %d died".formatted(dead.getId()));
         this.entities.remove(dead);
     }
     
     private void gameLoop() {
         while (shouldContinue()) {
             Entity entity = this.cursor.advance();
-            LOGGER.info("Entity %d is playing".formatted(entity.getId()));
+            LOGGER.info("Entering game cycle, entity %d is playing".formatted(entity.getId()));
             play(entity);
         }
     }
