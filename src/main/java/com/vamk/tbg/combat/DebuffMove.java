@@ -21,7 +21,7 @@ public class DebuffMove extends AbstractBuffMove {
     }
 
     @Override
-    public void doPerform(MoveContext context) {
+    protected void doPerform(MoveContext context) {
         Entity target = context.target();
         int dmg = (int) (target.getHealth() * 0.1);
         target.damage(dmg);
