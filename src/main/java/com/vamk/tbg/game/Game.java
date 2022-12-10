@@ -19,6 +19,7 @@ import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.signal.impl.UserReadySignal;
+import com.vamk.tbg.util.CollectionUtil;
 import com.vamk.tbg.util.Cursor;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
@@ -28,10 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
@@ -45,8 +43,8 @@ public class Game {
     private boolean importedState = false;
 
     public Game(SignalDispatcher dispatcher, Config config) {
-        // Load all moves into a map
-        this.moves = Stream.of(
+        this.moves = CollectionUtil.mapOf(
+                Move::getId,
                 new BuffMove(config),
                 new CureMove(),
                 new DebuffMove(config),
@@ -54,7 +52,7 @@ public class Game {
                 new HealAllMove(config),
                 new HealMove(config),
                 new SplashDamageMove(config)
-        ).collect(Collectors.toMap(Move::getId, Function.identity()));
+        );
 
         this.dispatcher = dispatcher;
         this.config = config;
