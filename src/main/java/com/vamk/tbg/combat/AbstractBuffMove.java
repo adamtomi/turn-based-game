@@ -6,6 +6,7 @@ import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
+import com.vamk.tbg.util.RandomUtil;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -38,7 +39,7 @@ public abstract class AbstractBuffMove extends AbstractMove {
 
     private void testAndApply(Map<String, Integer> chances, StatusEffect effect, Entity target) {
         int chance = chances.get(effect.name());
-        if (chance(chance)) { // I love how these names work so well here...
+        if (RandomUtil.chance(chance)) {
             target.applyEffect(effect);
             LOGGER.info("Applying effect %s to entity".formatted(effect));
         }

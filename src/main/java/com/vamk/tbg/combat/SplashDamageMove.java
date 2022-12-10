@@ -6,11 +6,10 @@ import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
+import com.vamk.tbg.util.RandomUtil;
 
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static com.vamk.tbg.util.RandomUtil.chance;
 
 public class SplashDamageMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(SplashDamageMove.class);
@@ -32,7 +31,7 @@ public class SplashDamageMove extends AbstractMove {
             // Don't damage friendly entities
             if (!entity.isEnemyOf(source)) continue;
 
-            if (chance(bleedingChance)) {
+            if (RandomUtil.chance(bleedingChance)) {
                 entity.applyEffect(StatusEffect.BLEEDING);
                 LOGGER.info("Entity %d is now bleeding".formatted(entity.getId()));
             }
