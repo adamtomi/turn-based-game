@@ -22,7 +22,7 @@ public class SetEffectCommand extends Command {
     public void run(CommandContext context) throws CommandException {
         Entity target = context.nextArg(Entity.class);
         StatusEffect effect = context.nextArg(StatusEffect.class);
-
         target.applyEffect(effect);
+        context.respond("Effect %s was applied to entity %d".formatted(effect.name(), target.getId()));
     }
 }

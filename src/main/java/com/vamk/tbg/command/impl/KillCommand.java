@@ -20,5 +20,6 @@ public class KillCommand extends Command {
     public void run(CommandContext context) throws CommandException {
         Entity target = context.nextArg(Entity.class);
         target.damage(target.getHealth() + 1);
+        context.respond("Entity %d was killed".formatted(target.getId()));
     }
 }

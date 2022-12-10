@@ -21,10 +21,12 @@ public class HealCommand extends Command {
     public void run(CommandContext context) throws CommandException {
         Entity target = context.nextArg(Entity.class);
         if (context.remaining() > 0) {
-            int amount = context.nextArg(Integer.TYPE);
+            int amount = context.nextArg(Integer.class);
             target.heal(amount);
+            context.respond("Entity %d was healed by %d, its new health is %d.".formatted(target.getId(), amount, target.getHealth()));
         } else {
             target.heal();
+            context.respond("Entity %d was fully healed.".formatted(target.getId()));
         }
     }
 }

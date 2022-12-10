@@ -1,5 +1,6 @@
 package com.vamk.tbg;
 
+import com.vamk.tbg.command.CommandManager;
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.game.Game;
@@ -11,6 +12,7 @@ import com.vamk.tbg.util.SerialUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 public class Main {
@@ -24,12 +26,14 @@ public class Main {
         private final Config config;
         private final Game game;
         private final GameWindow window;
+        private final CommandManager cmdManager;
 
         private Bootstrap() {
             SignalDispatcher dispatcher = new SignalDispatcher();
             this.config = new Config();
             this.game = new Game(dispatcher, this.config);
             this.window = new GameWindow(dispatcher, this.config, this::handleForceShutdown);
+            this.cmdManager = new CommandManager(this.game);
         }
 
         private void launch() {
@@ -41,9 +45,13 @@ public class Main {
                 System.exit(-1);
             }
 
+            // Setup command listener on a separate thread
+            if (this.config.get(Keys.DEV_MODE)) CompletableFuture.runAsync(this.cmdManager::listen);
+
             attemptRestore();
             this.game.launch();
             this.window.dispose();
+            this.cmdManager.stop();
         }
 
         private void attemptRestore() {

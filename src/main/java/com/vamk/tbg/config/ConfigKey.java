@@ -19,4 +19,8 @@ public interface ConfigKey<T> {
     static ConfigKey<String> stringKey(String path) {
         return new SimpleConfigKey<>(path, Function.identity());
     }
+
+    static ConfigKey<Boolean> boolKey(String path) {
+        return new SimpleConfigKey<>(path, Boolean::parseBoolean);
+    }
 }

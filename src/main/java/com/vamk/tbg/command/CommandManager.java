@@ -1,9 +1,18 @@
 package com.vamk.tbg.command;
 
+import com.vamk.tbg.command.impl.HealCommand;
+import com.vamk.tbg.command.impl.KillCommand;
+import com.vamk.tbg.command.impl.ListCommand;
+import com.vamk.tbg.command.impl.SetEffectCommand;
 import com.vamk.tbg.command.mapper.ArgumentMapper;
+import com.vamk.tbg.command.mapper.EntityMapper;
+import com.vamk.tbg.command.mapper.IntMapper;
+import com.vamk.tbg.command.mapper.StatusEffectMapper;
+import com.vamk.tbg.game.Game;
+import com.vamk.tbg.util.CollectionUtil;
+import com.vamk.tbg.util.LogUtil;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -16,23 +25,34 @@ public class CommandManager {
     /*
      * Don't use LogUtil for this logger, as those loggers might
      * log into files instead of to console, however, these messages
-     * should always be printed to the console.
+     * should always get printed to the console.
      */
     private static final Logger LOGGER = Logger.getLogger("[CommandListener]");
-    private static final String UNRECOGNIZED_COMMAND = "Unrecognized command. Type 'help' for help.";
     private final Map<Class<?>, ArgumentMapper<?>> knownMappers;
     private final Map<String, Command> knownCommands;
     private boolean listening = true;
 
-    public CommandManager() {
-        this.knownMappers = new HashMap<>();
-        this.knownCommands = new HashMap<>();
+    public CommandManager(Game game) {
+        this.knownMappers = CollectionUtil.mapOf(
+                ArgumentMapper::type,
+                new EntityMapper(game),
+                new IntMapper(),
+                new StatusEffectMapper()
+        );
+        this.knownCommands = CollectionUtil.mapOf(
+                Command::getName,
+                new HealCommand(),
+                new KillCommand(),
+                new ListCommand(game),
+                new SetEffectCommand()
+        );
     }
 
     public void listen() {
+        LogUtil.getLogger(CommandManager.class).info("Listening for commands");
         try (Scanner in = new Scanner(System.in)) {
             while (this.listening) {
-                String commandLine = in.next();
+                String commandLine = in.nextLine();
                 parseAndRun(commandLine);
             }
         }
@@ -43,31 +63,26 @@ public class CommandManager {
     }
 
     private void parseAndRun(String commandLine) {
-        if (commandLine.isBlank()) {
-            LOGGER.info(UNRECOGNIZED_COMMAND);
-            return;
-        }
-
         Queue<String> args = Arrays.stream(commandLine.split(" "))
                 .map(String::trim)
                 .collect(Collectors.toCollection(LinkedList::new));
 
         String name = args.poll();
         if (name == null) {
-            LOGGER.info(UNRECOGNIZED_COMMAND);
+            printHelp();
             return;
         }
 
         Command command = this.knownCommands.get(name);
         if (command == null) {
-            LOGGER.info(UNRECOGNIZED_COMMAND);
+            printHelp();
             return;
         }
 
         CommandContext context = new CommandContext(this.knownMappers, args, x -> LOGGER.info("[%s]: %s".formatted(command.getName(), x)));
         try {
             command.run(context);
-        } catch (CommandException ex) {
+        } catch (Exception ex) {
             LOGGER.warning(ex.getMessage());
             LOGGER.warning("\n");
             LOGGER.warning(getFullHelp(command));
@@ -92,5 +107,12 @@ public class CommandManager {
         builder.add(argBuilder.toString());
 
         return builder.toString();
+    }
+
+    private void printHelp() {
+        LOGGER.info("----------------------------------------");
+        LOGGER.info("The list of available commands is as follows:\n");
+        this.knownCommands.values().forEach(x -> LOGGER.info("%s -> %s".formatted(x.getName(), x.getDescription())));
+        LOGGER.info("----------------------------------------");
     }
 }
