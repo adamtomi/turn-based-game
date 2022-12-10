@@ -7,7 +7,6 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 

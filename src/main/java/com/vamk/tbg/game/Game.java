@@ -2,8 +2,8 @@ package com.vamk.tbg.game;
 
 import com.vamk.tbg.combat.BuffMove;
 import com.vamk.tbg.combat.CureMove;
-import com.vamk.tbg.combat.DebuffMove;
 import com.vamk.tbg.combat.DamageMove;
+import com.vamk.tbg.combat.DebuffMove;
 import com.vamk.tbg.combat.HealAllMove;
 import com.vamk.tbg.combat.HealMove;
 import com.vamk.tbg.combat.Move;
