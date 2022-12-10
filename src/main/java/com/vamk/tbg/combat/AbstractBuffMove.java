@@ -12,8 +12,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static com.vamk.tbg.util.RandomUtil.chance;
-
 public abstract class AbstractBuffMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(AbstractBuffMove.class);
     private final Config config;
@@ -32,12 +30,12 @@ public abstract class AbstractBuffMove extends AbstractMove {
         doPerform(context);
         Entity target = context.target();
         Map<String, Integer> chances = this.config.get(this.chancesKey);
-        this.potentialEffects.forEach(x -> testAndApply(chances, x, target));
+        this.potentialEffects.forEach(x -> applyEffects(chances, x, target));
     }
 
     protected abstract void doPerform(MoveContext context);
 
-    private void testAndApply(Map<String, Integer> chances, StatusEffect effect, Entity target) {
+    private void applyEffects(Map<String, Integer> chances, StatusEffect effect, Entity target) {
         int chance = chances.get(effect.name());
         if (RandomUtil.chance(chance)) {
             target.applyEffect(effect);
