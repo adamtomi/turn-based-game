@@ -11,7 +11,6 @@ import java.util.EnumSet;
 import java.util.logging.Logger;
 
 public class BuffMove extends AbstractBuffMove {
-
     private static final Logger LOGGER = LogUtil.getLogger(BuffMove.class);
     private static final EnumSet<StatusEffect> POTENTIAL_EFFECTS = EnumSet.of(
             StatusEffect.REGENERATION, StatusEffect.LIFESTEAL, StatusEffect.CAFFEINATED
