@@ -63,7 +63,7 @@ public class Entity implements Tickable {
      * @return true if this entity can attack "that" entity
      */
     public boolean isEnemyOf(Entity that) {
-        return hasEffect(StatusEffect.CONFUSED) == (this.hostile == that.hostile);
+        return hasEffect(StatusEffect.CONFUSED) == (this.hostile == that.hostile) && !that.equals(this);
     }
 
     public int getMaxHealth() {
