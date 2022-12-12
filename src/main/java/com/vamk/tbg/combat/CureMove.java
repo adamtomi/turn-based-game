@@ -22,6 +22,10 @@ public class CureMove extends AbstractMove {
         LOGGER.info("Entity %d has been cured thanks to %d".formatted(target.getId(), source.getId()));
     }
 
+    /**
+     * This move cannot be used on entities that don't
+     * have any harmful effects on them.
+     */
     @Override
     public boolean isApplicableTo(Entity entity) {
         int harmfulEffects = (int) entity.getEffects().keySet()

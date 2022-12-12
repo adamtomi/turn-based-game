@@ -10,6 +10,11 @@ import com.vamk.tbg.util.LogUtil;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
+/**
+ * The target of this move will lose a small
+ * amount of health and will likely get at least
+ * (but probably) more negative status effects.
+ */
 public class DebuffMove extends AbstractBuffMove {
     private static final Logger LOGGER = LogUtil.getLogger(DebuffMove.class);
     private static final EnumSet<StatusEffect> POTENTIAL_EFFECTS = EnumSet.of(
@@ -26,6 +31,5 @@ public class DebuffMove extends AbstractBuffMove {
         int dmg = (int) (target.getHealth() * 0.1);
         target.damage(dmg);
         LOGGER.info("Entity %d is lost %d hp thanks to %d".formatted(target.getId(), dmg, context.source().getId()));
-
     }
 }

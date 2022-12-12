@@ -12,6 +12,11 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Because the Buff and Debuff moves were practically
+ * the same, everything possible was abstracted away
+ * into this class.
+ */
 public abstract class AbstractBuffMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(AbstractBuffMove.class);
     private final Config config;

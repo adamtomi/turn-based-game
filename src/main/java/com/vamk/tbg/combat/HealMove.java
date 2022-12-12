@@ -10,6 +10,10 @@ import com.vamk.tbg.util.RandomUtil;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * The target is a single entity that'll get some
+ * health back.
+ */
 public class HealMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealMove.class);
     private final Config config;
@@ -31,6 +35,10 @@ public class HealMove extends AbstractMove {
         LOGGER.info("Entity %d has been healed by %d".formatted(target.getId(), source.getId()));
     }
 
+    /**
+     * This move cannot be used on entities that
+     * are at max health.
+     */
     @Override
     public boolean isApplicableTo(Entity entity) {
         return entity.getHealth() < entity.getMaxHealth();

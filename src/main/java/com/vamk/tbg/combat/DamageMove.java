@@ -11,6 +11,11 @@ import com.vamk.tbg.util.RandomUtil;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * A generic damage move, targets one entity,
+ * deals great damage and with a certain chance,
+ * it applies bleeding to the target.
+ */
 public class DamageMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(DamageMove.class);
     private final Config config;

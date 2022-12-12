@@ -10,6 +10,10 @@ import com.vamk.tbg.util.LogUtil;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
+/**
+ * Heals the targeted entity by a small amount
+ * and potentially applies some non-harmful effects.
+ */
 public class BuffMove extends AbstractBuffMove {
     private static final Logger LOGGER = LogUtil.getLogger(BuffMove.class);
     private static final EnumSet<StatusEffect> POTENTIAL_EFFECTS = EnumSet.of(

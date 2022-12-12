@@ -11,6 +11,11 @@ import com.vamk.tbg.util.RandomUtil;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * This is the damage equivalent of HealAllMove.
+ * All hostile entities will lose some health,
+ * the target will lose the most.
+ */
 public class SplashDamageMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(SplashDamageMove.class);
     private final Config config;

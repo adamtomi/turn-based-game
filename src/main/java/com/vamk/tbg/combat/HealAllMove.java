@@ -9,6 +9,11 @@ import com.vamk.tbg.util.LogUtil;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * This move affects all friendly entities, however
+ * it still needs a target. All entities will regain
+ * some health with the target getting the most back.
+ */
 public class HealAllMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealAllMove.class);
     private final Config config;
