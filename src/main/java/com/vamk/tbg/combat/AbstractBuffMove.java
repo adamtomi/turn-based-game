@@ -30,17 +30,25 @@ public abstract class AbstractBuffMove extends AbstractMove {
         this.potentialEffects = potentialEffects;
     }
 
+    /**
+     * Perform the move itself. This involves applying effects
+     * as well as calling {@link this#doPerform(MoveContext)},
+     * which is implemented by other classes.
+     */
     @Override
     public final void perform(MoveContext context) {
         doPerform(context);
         Entity target = context.target();
         Map<String, Integer> chances = this.config.get(this.chancesKey);
-        this.potentialEffects.forEach(x -> applyEffects(chances, x, target));
+        this.potentialEffects.forEach(x -> applyEffect(chances, x, target));
     }
 
     protected abstract void doPerform(MoveContext context);
 
-    private void applyEffects(Map<String, Integer> chances, StatusEffect effect, Entity target) {
+    /**
+     * Apply effect with a configured chance.
+     */
+    private void applyEffect(Map<String, Integer> chances, StatusEffect effect, Entity target) {
         int chance = chances.get(effect.name());
         if (RandomUtil.chance(chance)) {
             target.applyEffect(effect);
