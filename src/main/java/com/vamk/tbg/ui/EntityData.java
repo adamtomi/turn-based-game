@@ -12,6 +12,11 @@ import java.awt.GridLayout;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This class is a container for a single entity.
+ * It displays all the necessary information in
+ * a hideous fashion (it's truly painful to look at).
+ */
 public class EntityData {
     private static final Color FRIENDLY_COLOR = new Color(60, 160, 38);
     private static final Color DEFAULT_BG_COLOR = new Color(220, 220, 220);

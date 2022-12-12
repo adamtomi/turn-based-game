@@ -20,6 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The user can interact with the game through
+ * this container. All move and entity buttons
+ * are contained within this panel.
+ */
 public class ButtonContainer extends JPanel {
     @Serial
     private static final long serialVersionUID = -1848838910296723317L;
@@ -44,6 +49,10 @@ public class ButtonContainer extends JPanel {
         setVisible(true);
     }
 
+    /**
+     * Create all necessary buttons for all entities
+     * and moves once the game is ready.
+     */
     private void onGameReady(GameReadySignal signal) {
         JPanel entityPanel = new JPanel();
         for (Entity entity : signal.getEntities()) {
@@ -71,6 +80,10 @@ public class ButtonContainer extends JPanel {
         add(movePanel);
     }
 
+    /**
+     * When an entity dies, the button belonging to
+     * that entity gets disabled.
+     */
     private void onEntityDeath(EntityDeathSignal signal) {
         Entity entity = signal.getEntity();
         JButton button = this.entityButtons.remove(entity);
@@ -79,6 +92,12 @@ public class ButtonContainer extends JPanel {
         button.setEnabled(false);
     }
 
+    /**
+     * Every time an entity plays, the move buttons
+     * need to be updated to give a visual indication
+     * of the available moves. If the entity is not
+     * controlled by the user, the buttons get disabled.
+     */
     private void onEntityPlays(EntityPlaysSignal signal) {
         Entity entity = signal.getEntity();
         boolean userControlled = signal.isUserControlled();
@@ -95,12 +114,27 @@ public class ButtonContainer extends JPanel {
         }
     }
 
+    /**
+     * The game flow is that the move is selected first, and
+     * only after that will the entity get selected. So if
+     * there's no move selected at this point, don't do
+     * anything. Otherwise, a new {@link UserReadySignal}
+     * is dispatched.
+     *
+     * @see UserReadySignal
+     */
     private void entityButtonClicked(Entity target) {
         if (this.move == null) return;
 
         this.dispatcher.dispatch(new UserReadySignal(target, this.move));
     }
 
+    /**
+     * The state of the entity buttons (whether they're enabled
+     * or disabled) depends on the currently selected move.
+     * Some moves aren't applicable to all entities, so
+     * the entity buttons should update accordingly.
+     */
     private void moveButtonClicked(int idx) {
         Move move = this.currentEntity.getMoves().get(idx);
         this.move = move;

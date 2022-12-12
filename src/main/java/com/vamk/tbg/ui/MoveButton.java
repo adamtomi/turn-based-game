@@ -3,6 +3,9 @@ package com.vamk.tbg.ui;
 import javax.swing.JButton;
 import java.util.function.IntConsumer;
 
+/**
+ * A simple wrapper for move buttons.
+ */
 public class MoveButton {
     private final JButton button;
 

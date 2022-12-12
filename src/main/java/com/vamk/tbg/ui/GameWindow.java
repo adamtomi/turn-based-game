@@ -12,6 +12,11 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.Serial;
 
+/**
+ * The main game window containing all other UI containers.
+ * It also listens to window close events to allow a custom
+ * hook to run before exiting.
+ */
 public class GameWindow extends JFrame implements WindowListener {
     @Serial
     private static final long serialVersionUID = 3210313597488494598L;
