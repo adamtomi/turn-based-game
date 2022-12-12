@@ -112,6 +112,9 @@ public class ButtonContainer extends JPanel {
 
             button.setEnabled(userControlled);
         }
+
+        // Enable all entity buttons again
+        if (userControlled) this.entityButtons.values().forEach(x -> x.setEnabled(true));
     }
 
     /**
