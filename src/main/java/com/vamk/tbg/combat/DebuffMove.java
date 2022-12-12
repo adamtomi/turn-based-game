@@ -30,6 +30,6 @@ public class DebuffMove extends AbstractBuffMove {
         Entity target = context.target();
         int dmg = (int) (target.getHealth() * 0.1);
         target.damage(dmg);
-        LOGGER.info("Entity %d is lost %d hp thanks to %d".formatted(target.getId(), dmg, context.source().getId()));
+        LOGGER.info("Entity %d has lost %d hp thanks to %d".formatted(target.getId(), dmg, context.source().getId()));
     }
 }
