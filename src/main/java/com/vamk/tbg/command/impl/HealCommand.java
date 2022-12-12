@@ -6,6 +6,10 @@ import com.vamk.tbg.command.CommandContext;
 import com.vamk.tbg.command.CommandException;
 import com.vamk.tbg.game.Entity;
 
+/**
+ * Heals the specified entity by the specified amount. If
+ * no amount was given, the entity gets fully healed.
+ */
 public class HealCommand extends Command {
 
     public HealCommand() {

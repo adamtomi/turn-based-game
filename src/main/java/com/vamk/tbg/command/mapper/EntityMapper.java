@@ -3,6 +3,9 @@ package com.vamk.tbg.command.mapper;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.Game;
 
+/**
+ * A mapper that converts strings into {@link Entity} objects.
+ */
 public class EntityMapper implements ArgumentMapper<Entity> {
     private final Game game;
 
@@ -15,6 +18,12 @@ public class EntityMapper implements ArgumentMapper<Entity> {
         return Entity.class;
     }
 
+    /**
+     * Users are expected to specify a number which is then
+     * treated as the ID of the entity. If the argument is
+     * not a valid number or there's no entity with that ID,
+     * an exception is thrown.
+     */
     @Override
     public Entity map(String arg) throws ArgumentException {
         try {
