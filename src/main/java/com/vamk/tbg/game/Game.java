@@ -119,7 +119,7 @@ public class Game {
         this.dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);
         /*
          * If a previously exported game state was restored, we don't
-         * need to ge through this setup process.
+         * need to ge through the setup process.
          */
         if (!this.importedState) {
             LOGGER.info("Preparing game, spawning entities...");

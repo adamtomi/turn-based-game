@@ -21,9 +21,11 @@ public class Cursor<T> {
     }
 
     /**
-     * Moves the cursor forward, then returns the current element.
+     * Moves the cursor forward, then returns the element at that index.
      * If it's at the end of the list, the cursor gets reset to 0,
      * so that it can start over again.
+     *
+     * @return The element at the currently selected index
      */
     public T advance() {
         if (this.cursor >= this.elements.size() - 1) {
@@ -42,6 +44,11 @@ public class Cursor<T> {
         return this.cursor;
     }
 
+    /**
+     * Rollback the cursor to the previous position.
+     * If it's at 0 right now, it's set to the index
+     * of the last element in the list.
+     */
     public void rollback() {
         if (this.cursor == 0) {
             this.cursor = this.elements.size() - 1;
