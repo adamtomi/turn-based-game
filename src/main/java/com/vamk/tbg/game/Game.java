@@ -226,10 +226,10 @@ public class Game {
      */
     private void play(Entity entity, boolean first) {
         /*
-         * Make sure to tick the entity before potentially
+         * Make sure to update the entity before potentially
          * skipping its round.
          */
-        entity.tick();
+        entity.update();
         this.effectHandlers.forEach(x -> x.applyTo(entity));
         // FROZEN rids the entity from this round
         if (!entity.hasEffect(StatusEffect.FROZEN)) {

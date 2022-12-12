@@ -7,7 +7,6 @@ import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.util.LogUtil;
-import com.vamk.tbg.util.Tickable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class Entity implements Tickable {
+public class Entity {
     private final Map<StatusEffect, Integer> activeEffects;
     private final int id;
     private final boolean hostile;
@@ -197,7 +196,7 @@ public class Entity implements Tickable {
      *
      * @param effect StatusEffect The effect
      * @see this#cure()
-     * @see this#tick()
+     * @see this#update()
      * @see EffectsUpdatedSignal
      */
     public void removeEffect(StatusEffect effect) {
@@ -239,8 +238,7 @@ public class Entity implements Tickable {
      *
      * @see this#removeEffect(StatusEffect)
      */
-    @Override
-    public void tick() {
+    public void update() {
         Set<StatusEffect> expired = new HashSet<>();
         for (Map.Entry<StatusEffect, Integer> entry : this.activeEffects.entrySet()) {
             int rounds = entry.getValue() - 1;
