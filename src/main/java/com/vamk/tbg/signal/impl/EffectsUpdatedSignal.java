@@ -3,6 +3,10 @@ package com.vamk.tbg.signal.impl;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
+/**
+ * This signal is dispatched when an entity's effects
+ * change (regardless of the cause).
+ */
 public class EffectsUpdatedSignal implements Signal {
     private static final String ID = "EFFECTS_UPDATED";
     private final Entity entity;

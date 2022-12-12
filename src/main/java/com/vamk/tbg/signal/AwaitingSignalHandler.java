@@ -3,6 +3,12 @@ package com.vamk.tbg.signal;
 import java.util.concurrent.CountDownLatch;
 
 public class AwaitingSignalHandler<S extends Signal> implements SignalHandler<S> {
+    /*
+     * Use a CountDownLatch to force the calling thread to
+     * block until this#handle has been called (which will
+     * be called once a signal has been dispatched). Not
+     * very elegant...
+     */
     private final CountDownLatch latch;
     private S signal;
 

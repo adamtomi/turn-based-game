@@ -3,6 +3,10 @@ package com.vamk.tbg.signal.impl;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
+/**
+ * This signal is dispatched every round indicating
+ * that the next entity is playing.
+ */
 public class EntityPlaysSignal implements Signal {
     private static final String ID = "ENTITY_PLAYS";
     private final Entity entity;

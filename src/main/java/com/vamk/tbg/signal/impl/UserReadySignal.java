@@ -4,6 +4,10 @@ import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
+/**
+ * Dispatched once the user has selected a move
+ * and a target entity as well.
+ */
 public class UserReadySignal implements Signal {
     private static final String ID = "USER_READY";
     private final Entity target;

@@ -3,6 +3,10 @@ package com.vamk.tbg.signal.impl;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
+/**
+ * This signal is used to indicate that the
+ * entitiy in question has died.
+ */
 public class EntityDeathSignal implements Signal {
     private static final String ID = "ENTITY_DEATH";
     private final Entity entity;
