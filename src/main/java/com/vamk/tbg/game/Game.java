@@ -138,7 +138,7 @@ public class Game {
         while (shouldContinue()) {
             Entity entity = this.cursor.advance();
             LOGGER.info("Entering game cycle, entity %d is playing".formatted(entity.getId()));
-            play(entity);
+            play(entity, true);
         }
     }
 
@@ -147,7 +147,7 @@ public class Game {
         return hostiles > 0 && this.entities.size() - hostiles > 0;
     }
 
-    private void play(Entity entity) {
+    private void play(Entity entity, boolean first) {
         /*
          * Make sure to tick the entity before potentially
          * skipping their round.
@@ -185,7 +185,7 @@ public class Game {
         }
 
         // CAFFEINATED grants another turn
-        if (entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity);
+        if (first && entity.hasEffect(StatusEffect.CAFFEINATED)) play(entity, false);
     }
 
     public List<Entity> getEntities() {
