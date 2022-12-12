@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+
+/**
+ * A key that can convert a string such as
+ * key0=value0 key1=value1 key2=value
+ * into an actual {@link Map}.
+ */
 public abstract class MapKey<T> extends AbstractConfigKey<Map<String, T>> {
     /* Separates key-value pairs */
     private static final String SEPARATOR = ",";

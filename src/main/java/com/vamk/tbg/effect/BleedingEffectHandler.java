@@ -8,6 +8,9 @@ import com.vamk.tbg.util.RandomUtil;
 
 import java.util.logging.Logger;
 
+/**
+ * Every turn the entity loses a chunk of its health.
+ */
 public class BleedingEffectHandler implements StatusEffectHandler {
     private static final Logger LOGGER = LogUtil.getLogger(BleedingEffectHandler.class);
     private final Config config;

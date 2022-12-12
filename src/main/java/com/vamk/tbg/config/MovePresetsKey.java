@@ -3,6 +3,12 @@ package com.vamk.tbg.config;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A special key for the "game.move-presets" configuration key.
+ * It takes a list of string lists and turns that into a list
+ * of move lists. Later, when the game is initialized, it will
+ * select random move combinations from this list.
+ */
 final class MovePresetsKey extends AbstractConfigKey<List<List<String>>> {
     private static final String PREFIX = "[";
     private static final String SUFFIX = "]";
@@ -20,6 +26,11 @@ final class MovePresetsKey extends AbstractConfigKey<List<List<String>>> {
                 .toList();
     }
 
+    /**
+     * This method is resposible for converting
+     * a single string ( [value0 value1 value2 value3] )
+     * into a {@link List}
+     */
     private List<String> processInvididual(String entry) {
         if (entry.startsWith(PREFIX)) entry = entry.substring(1);
         if (entry.endsWith(SUFFIX)) entry = entry.substring(0, entry.length() - 1);

@@ -1,5 +1,8 @@
 package com.vamk.tbg.config;
 
+/**
+ * Stores all config key constants.
+ */
 public final class Keys {
     /* General settings */
     public static final ConfigKey<Boolean> DEV_MODE = ConfigKey.boolKey("general.dev-mode");

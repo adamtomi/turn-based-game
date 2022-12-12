@@ -8,6 +8,9 @@ import com.vamk.tbg.util.RandomUtil;
 
 import java.util.logging.Logger;
 
+/**
+ * Every turn the entity gains some health back.
+ */
 public class RegenEffectHandler implements StatusEffectHandler {
     private static final Logger LOGGER = LogUtil.getLogger(RegenEffectHandler.class);
     private final Config config;
