@@ -36,6 +36,13 @@ public class Main {
             this.cmdManager = new CommandManager(this.game);
         }
 
+        /**
+         * Tries to load the configuration. If that fails, exit.
+         * After that, register the command listener (if dev mode
+         * is enabled), then launch the game. Once the game loop
+         * finishes, dismantle the window and the command manager
+         * and exit.
+         */
         private void launch() {
             try {
                 this.config.load();
@@ -54,6 +61,11 @@ public class Main {
             this.cmdManager.stop();
         }
 
+        /**
+         * Tries to read a previous game state from the configured
+         * file. If the file doesn't exist, return. Otherwise,
+         * load the state and import it into {@link this#game}.
+         */
         private void attemptRestore() {
             File file = new File(this.config.get(Keys.BACKUP_LOCATION));
             if (!file.exists()) return;
@@ -68,6 +80,12 @@ public class Main {
             }
         }
 
+        /**
+         * This method will be called if the opened JFrame is closed.
+         * The current game state will be written to the configured
+         * file. If the file already exists, the contents of it
+         * will be replaced.
+         */
         private void handleForceShutdown() {
             LOGGER.info("Force shutdown initiated, writing game state to file");
             GameState state = this.game.exportState();
