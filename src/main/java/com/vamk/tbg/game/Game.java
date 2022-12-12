@@ -254,6 +254,14 @@ public class Game {
                         .filter(x -> move.isAttack() == entity.isEnemyOf(x))
                         .toList();
 
+                //TODO this is not the best way to go about this problem.
+                // It'd be nice to have a better "AI" in place however,
+                // in which case this will get replaced anyway.
+                if (targets.isEmpty()) {
+                    LOGGER.info("No suitable target found...");
+                    return;
+                }
+
                 target = RandomUtil.pickRandom(targets);
             }
 
