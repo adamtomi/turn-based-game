@@ -31,6 +31,10 @@ public class CommandManager {
      * should always get printed to the console.
      */
     private static final Logger LOGGER = LogUtil.withFormatter(Logger.getAnonymousLogger(), new LogFormatter("%s\n", (format, record) -> format.formatted(record.getMessage())));
+    /* Format for required arguments */
+    private static final String REQUIRED_FORMAT = "<%s>";
+    /* Format for optional arguments */
+    private static final String OPTIONAL_FORMAT = "[%s]";
     private final Map<Class<?>, ArgumentMapper<?>> knownMappers;
     private final Map<String, Command> knownCommands;
     private boolean listening = true;
@@ -101,7 +105,8 @@ public class CommandManager {
         for (Argument arg : command.getArguments()) {
             String argName = arg.getName().toUpperCase();
 
-            syntaxBuilder.add("<%s>".formatted(argName));
+            String syntaxPart = (arg.isOptional() ? OPTIONAL_FORMAT : REQUIRED_FORMAT).formatted(argName);
+            syntaxBuilder.add(syntaxPart);
             argBuilder.add("%s -> %s".formatted(argName, arg.getDescription()));
         }
 
@@ -115,7 +120,7 @@ public class CommandManager {
 
     private void printHelp() {
         LOGGER.info("----------------------------------------");
-        LOGGER.info("The list of available commands is as follows:\n");
+        LOGGER.info("The list of available commands:\n");
         this.knownCommands.values().forEach(x -> LOGGER.info("%s -> %s".formatted(x.getName(), x.getDescription())));
         LOGGER.info("----------------------------------------");
     }

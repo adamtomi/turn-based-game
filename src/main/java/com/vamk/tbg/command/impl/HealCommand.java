@@ -13,7 +13,7 @@ public class HealCommand extends Command {
                 "heal",
                 "Heals the specified entity by the specified amount",
                 new Argument("target", "Specify the ID of the entity to be healed"),
-                new Argument("amount", "Specify by how much should the entity be healed")
+                new Argument("amount", "Specify by how much should the entity be healed", true)
         );
     }
 
