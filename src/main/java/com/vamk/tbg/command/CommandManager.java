@@ -4,6 +4,8 @@ import com.vamk.tbg.command.impl.DamageCommand;
 import com.vamk.tbg.command.impl.HealCommand;
 import com.vamk.tbg.command.impl.KillCommand;
 import com.vamk.tbg.command.impl.ListCommand;
+import com.vamk.tbg.command.impl.ListEffectsCommand;
+import com.vamk.tbg.command.impl.ListMovesCommand;
 import com.vamk.tbg.command.impl.RemoveEffectCommand;
 import com.vamk.tbg.command.impl.SetEffectCommand;
 import com.vamk.tbg.command.mapper.ArgumentMapper;
@@ -65,6 +67,8 @@ public class CommandManager {
                 new HealCommand(),
                 new KillCommand(),
                 new ListCommand(game),
+                new ListEffectsCommand(),
+                new ListMovesCommand(),
                 new RemoveEffectCommand(),
                 new SetEffectCommand()
         );
