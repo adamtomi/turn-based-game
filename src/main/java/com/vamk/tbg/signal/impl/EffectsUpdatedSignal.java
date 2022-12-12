@@ -4,7 +4,7 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.signal.Signal;
 
 public class EffectsUpdatedSignal implements Signal {
-    private static final String ID = "EFFECT_UPDATED";
+    private static final String ID = "EFFECTS_UPDATED";
     private final Entity entity;
 
     public EffectsUpdatedSignal(Entity entity) {
