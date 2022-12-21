@@ -2,6 +2,8 @@ package com.vamk.tbg.config;
 
 import com.vamk.tbg.Main;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +15,7 @@ import java.util.Map;
  * A simple configuration class. The parsed entries are
  * stored in the internalConfig map.
  */
+@Singleton
 public class Config {
     private static final String LOCATION = "/config.txt";
     private static final String COMMENT_SIGN = "#";
@@ -20,6 +23,8 @@ public class Config {
     /* Store parsed entries in this map */
     private final Map<String, String> internalConfig;
 
+
+    @Inject
     public Config() {
         this.internalConfig = new HashMap<>();
     }

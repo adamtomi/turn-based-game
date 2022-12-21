@@ -24,6 +24,8 @@ import com.vamk.tbg.util.Cursor;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ import java.util.logging.Logger;
  * itself as well as creating all entities, dealing with
  * serialization and more.
  */
+@Singleton
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
     private final Map<String, Move> moves;
@@ -47,6 +50,7 @@ public class Game {
     private Cursor<Entity> cursor;
     private boolean importedState = false;
 
+    @Inject
     public Game(SignalDispatcher dispatcher, Config config) {
         this.moves = CollectionUtil.mapOf(
                 Move::getId,
