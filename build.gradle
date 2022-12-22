@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group 'com.vamk'
@@ -13,4 +14,9 @@ dependencies {
     implementation 'javax.inject:javax.inject:1'
     implementation 'com.google.dagger:dagger:2.44.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.44.2'
+}
+
+shadowJar {
+    minimize()
+    archiveFileName.set("${project.name}-${project.version}.jar")
 }
