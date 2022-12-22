@@ -5,7 +5,6 @@ import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.game.Game;
 import com.vamk.tbg.game.GameState;
-import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.ui.GameWindow;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.SerialUtil;

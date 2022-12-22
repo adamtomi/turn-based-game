@@ -1,11 +1,10 @@
 package com.vamk.tbg.util;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-// TODO once dagger is in place, this class is not needed anymore.
 public final class CollectionUtil {
 
     private CollectionUtil() {}
@@ -16,8 +15,7 @@ public final class CollectionUtil {
      * @see com.vamk.tbg.command.CommandManager
      * @see com.vamk.tbg.game.Game
      */
-    @SafeVarargs
-    public static <K, V> Map<K, V> mapOf(Function<V, K> keyMapper, V... values) {
-        return Stream.of(values).collect(Collectors.toMap(keyMapper, Function.identity()));
+    public static <K, V, C extends Collection<V>> Map<K, V> mapOf(Function<V, K> keyMapper, C values) {
+        return values.stream().collect(Collectors.toMap(keyMapper, Function.identity()));
     }
 }

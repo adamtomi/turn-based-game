@@ -1,27 +1,19 @@
 package com.vamk.tbg.command;
 
-import com.vamk.tbg.command.impl.DamageCommand;
-import com.vamk.tbg.command.impl.HealCommand;
-import com.vamk.tbg.command.impl.KillCommand;
-import com.vamk.tbg.command.impl.ListCommand;
-import com.vamk.tbg.command.impl.ListEffectsCommand;
-import com.vamk.tbg.command.impl.ListMovesCommand;
-import com.vamk.tbg.command.impl.RemoveEffectCommand;
-import com.vamk.tbg.command.impl.SetEffectCommand;
 import com.vamk.tbg.command.mapper.ArgumentMapper;
-import com.vamk.tbg.command.mapper.EntityMapper;
-import com.vamk.tbg.command.mapper.IntMapper;
-import com.vamk.tbg.command.mapper.StatusEffectMapper;
-import com.vamk.tbg.game.Game;
+import com.vamk.tbg.di.qualifier.CommandSet;
+import com.vamk.tbg.di.qualifier.MapperSet;
 import com.vamk.tbg.util.CollectionUtil;
 import com.vamk.tbg.util.LogFormatter;
 import com.vamk.tbg.util.LogUtil;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -54,24 +46,11 @@ public class CommandManager {
     /* This state will be changed by this#listen and this#stop */
     private boolean listening;
 
-    public CommandManager(Game game) {
-        this.knownMappers = CollectionUtil.mapOf(
-                ArgumentMapper::type,
-                new EntityMapper(game),
-                new IntMapper(),
-                new StatusEffectMapper()
-        );
-        this.knownCommands = CollectionUtil.mapOf(
-                Command::getName,
-                new DamageCommand(),
-                new HealCommand(),
-                new KillCommand(),
-                new ListCommand(game),
-                new ListEffectsCommand(),
-                new ListMovesCommand(),
-                new RemoveEffectCommand(),
-                new SetEffectCommand()
-        );
+    @Inject
+    public CommandManager(@MapperSet Set<ArgumentMapper<?>> mappers,
+                          @CommandSet Set<Command> commands) {
+        this.knownMappers = CollectionUtil.mapOf(ArgumentMapper::type, mappers);
+        this.knownCommands = CollectionUtil.mapOf(Command::getName, commands);
     }
 
     /**

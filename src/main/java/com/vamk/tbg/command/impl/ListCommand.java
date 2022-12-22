@@ -5,11 +5,13 @@ import com.vamk.tbg.command.CommandContext;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.Game;
 
+import javax.inject.Inject;
 import java.util.stream.Collectors;
 
 public class ListCommand extends Command {
     private final Game game;
 
+    @Inject
     public ListCommand(Game game) {
         super(
                 "list",

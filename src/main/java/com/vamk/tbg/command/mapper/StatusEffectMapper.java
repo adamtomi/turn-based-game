@@ -2,12 +2,16 @@ package com.vamk.tbg.command.mapper;
 
 import com.vamk.tbg.effect.StatusEffect;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 
 /**
  * A mapper that turns strings into {@link StatusEffect} objects.
  */
 public class StatusEffectMapper implements ArgumentMapper<StatusEffect> {
+
+    @Inject
+    public StatusEffectMapper() {}
 
     @Override
     public Class<StatusEffect> type() {
