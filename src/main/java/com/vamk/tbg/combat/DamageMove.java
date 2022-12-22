@@ -8,6 +8,7 @@ import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
 
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ public class DamageMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(DamageMove.class);
     private final Config config;
 
+    @Inject
     public DamageMove(Config config) {
         super("DAMAGE", true);
         this.config = config;

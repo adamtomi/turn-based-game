@@ -7,8 +7,11 @@ import com.vamk.tbg.command.CommandException;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 
+import javax.inject.Inject;
+
 public class SetEffectCommand extends Command {
 
+    @Inject
     public SetEffectCommand() {
         super(
                 "set-eff",

@@ -7,10 +7,12 @@ import com.vamk.tbg.command.CommandContext;
 import com.vamk.tbg.command.CommandException;
 import com.vamk.tbg.game.Entity;
 
+import javax.inject.Inject;
 import java.util.stream.Collectors;
 
 public class ListMovesCommand extends Command {
 
+    @Inject
     public ListMovesCommand() {
         super(
                 "ls-mov",

@@ -3,12 +3,15 @@ package com.vamk.tbg.command.mapper;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.Game;
 
+import javax.inject.Inject;
+
 /**
  * A mapper that converts strings into {@link Entity} objects.
  */
 public class EntityMapper implements ArgumentMapper<Entity> {
     private final Game game;
 
+    @Inject
     public EntityMapper(Game game) {
         this.game = game;
     }

@@ -10,6 +10,7 @@ import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 import com.vamk.tbg.signal.impl.UserReadySignal;
 
+import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -35,6 +36,7 @@ public class ButtonContainer extends JPanel {
     private Entity currentEntity;
     private Move move;
 
+    @Inject
     public ButtonContainer(SignalDispatcher dispatcher, Config config) {
         this.dispatcher = dispatcher;
         this.config = config;

@@ -7,12 +7,14 @@ import com.vamk.tbg.command.CommandException;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ListEffectsCommand extends Command {
 
+    @Inject
     public ListEffectsCommand() {
         super(
                 "ls-eff",

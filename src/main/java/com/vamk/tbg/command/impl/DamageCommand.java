@@ -6,8 +6,11 @@ import com.vamk.tbg.command.CommandContext;
 import com.vamk.tbg.command.CommandException;
 import com.vamk.tbg.game.Entity;
 
+import javax.inject.Inject;
+
 public class DamageCommand extends Command {
 
+    @Inject
     public DamageCommand() {
         super(
                 "dmg",

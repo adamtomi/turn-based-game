@@ -2,6 +2,8 @@ package com.vamk.tbg.signal;
 
 import com.vamk.tbg.util.LogUtil;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,10 +16,12 @@ import java.util.logging.Logger;
  * (aka subscribe) to certain signals, and when a signal is
  * dispatched, all subscribers are notified.
  */
+@Singleton
 public class SignalDispatcher {
     private static final Logger LOGGER = LogUtil.getLogger(SignalDispatcher.class);
     private final Map<Class<? extends Signal>, List<SignalHandler<? extends Signal>>> handlers;
 
+    @Inject
     public SignalDispatcher() {
         this.handlers = new HashMap<>();
     }
