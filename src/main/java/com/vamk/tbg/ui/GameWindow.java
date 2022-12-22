@@ -6,7 +6,6 @@ import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 
-import javax.inject.Inject;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
