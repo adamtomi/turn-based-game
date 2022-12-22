@@ -1,7 +1,7 @@
 package com.vamk.tbg.ui;
 
-import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.effect.StatusEffect;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;

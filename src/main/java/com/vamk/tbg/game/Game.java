@@ -1,12 +1,12 @@
 package com.vamk.tbg.game;
 
-import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.di.qualifier.EffectHandlerSet;
 import com.vamk.tbg.di.qualifier.MoveSet;
-import com.vamk.tbg.effect.StatusEffect;
-import com.vamk.tbg.effect.StatusEffectHandler;
+import com.vamk.tbg.game.combat.Move;
+import com.vamk.tbg.game.effect.StatusEffect;
+import com.vamk.tbg.game.effect.StatusEffectHandler;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;

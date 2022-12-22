@@ -1,11 +1,11 @@
 package com.vamk.tbg.command.impl;
 
-import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.command.Argument;
 import com.vamk.tbg.command.Command;
 import com.vamk.tbg.command.CommandContext;
 import com.vamk.tbg.command.CommandException;
 import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.combat.Move;
 
 import javax.inject.Inject;
 import java.util.stream.Collectors;

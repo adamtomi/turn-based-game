@@ -1,9 +1,9 @@
 package com.vamk.tbg.ui;
 
-import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
 import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.combat.Move;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;

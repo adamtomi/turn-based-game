@@ -1,7 +1,7 @@
 package com.vamk.tbg.game;
 
-import com.vamk.tbg.combat.Move;
-import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.game.combat.Move;
+import com.vamk.tbg.game.effect.StatusEffect;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EffectsUpdatedSignal;
 import com.vamk.tbg.signal.impl.EntityDeathSignal;
@@ -208,7 +208,7 @@ public class Entity {
      * Removes all negative status effects from this entity.
      *
      * @see this#removeEffect(StatusEffect)
-     * @see com.vamk.tbg.combat.CureMove
+     * @see com.vamk.tbg.game.combat.CureMove
      */
     public void cure() {
         Set<StatusEffect> negativeEffects = this.activeEffects.keySet()

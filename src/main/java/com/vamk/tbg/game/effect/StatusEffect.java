@@ -1,4 +1,4 @@
-package com.vamk.tbg.effect;
+package com.vamk.tbg.game.effect;
 
 public enum StatusEffect {
 

@@ -1,4 +1,4 @@
-package com.vamk.tbg.combat;
+package com.vamk.tbg.game.combat;
 
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;

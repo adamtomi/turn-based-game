@@ -1,4 +1,4 @@
-package com.vamk.tbg.effect;
+package com.vamk.tbg.game.effect;
 
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;

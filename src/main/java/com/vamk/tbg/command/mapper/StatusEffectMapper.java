@@ -1,6 +1,6 @@
 package com.vamk.tbg.command.mapper;
 
-import com.vamk.tbg.effect.StatusEffect;
+import com.vamk.tbg.game.effect.StatusEffect;
 
 import javax.inject.Inject;
 import java.util.Arrays;

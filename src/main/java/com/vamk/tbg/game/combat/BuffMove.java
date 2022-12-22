@@ -1,10 +1,10 @@
-package com.vamk.tbg.combat;
+package com.vamk.tbg.game.combat;
 
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
-import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
+import com.vamk.tbg.game.effect.StatusEffect;
 import com.vamk.tbg.util.LogUtil;
 
 import javax.inject.Inject;

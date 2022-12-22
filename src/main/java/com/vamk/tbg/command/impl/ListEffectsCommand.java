@@ -4,8 +4,8 @@ import com.vamk.tbg.command.Argument;
 import com.vamk.tbg.command.Command;
 import com.vamk.tbg.command.CommandContext;
 import com.vamk.tbg.command.CommandException;
-import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.effect.StatusEffect;
 
 import javax.inject.Inject;
 import java.util.Arrays;

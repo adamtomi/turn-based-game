@@ -1,7 +1,7 @@
 package com.vamk.tbg.signal.impl;
 
-import com.vamk.tbg.combat.Move;
 import com.vamk.tbg.game.Entity;
+import com.vamk.tbg.game.combat.Move;
 import com.vamk.tbg.signal.Signal;
 
 /**
