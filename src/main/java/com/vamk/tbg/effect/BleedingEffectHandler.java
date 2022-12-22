@@ -6,6 +6,7 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.util.LogUtil;
 import com.vamk.tbg.util.RandomUtil;
 
+import javax.inject.Inject;
 import java.util.logging.Logger;
 
 /**
@@ -15,6 +16,7 @@ public class BleedingEffectHandler implements StatusEffectHandler {
     private static final Logger LOGGER = LogUtil.getLogger(BleedingEffectHandler.class);
     private final Config config;
 
+    @Inject
     public BleedingEffectHandler(Config config) {
         this.config = config;
     }
