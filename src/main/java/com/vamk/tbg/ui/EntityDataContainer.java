@@ -8,6 +8,7 @@ import com.vamk.tbg.signal.impl.EntityHealthChangedSignal;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
 import com.vamk.tbg.signal.impl.GameReadySignal;
 
+import javax.inject.Inject;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import java.io.Serial;
@@ -24,6 +25,7 @@ public class EntityDataContainer extends JPanel {
     private static final long serialVersionUID = -7455891810519039109L;
     private final Map<Integer, EntityData> entityData;
 
+    @Inject
     public EntityDataContainer(SignalDispatcher dispatcher) {
         dispatcher.subscribe(GameReadySignal.class, this::onGameReady);
         dispatcher.subscribe(EntityDeathSignal.class, this::onEntityDeath);

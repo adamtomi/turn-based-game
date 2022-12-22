@@ -1,9 +1,12 @@
 package com.vamk.tbg.ui;
 
-import com.vamk.tbg.config.Config;
 import com.vamk.tbg.signal.SignalDispatcher;
 import com.vamk.tbg.signal.impl.EntityPlaysSignal;
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
 
+import javax.inject.Inject;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -23,7 +26,11 @@ public class GameWindow extends JFrame implements WindowListener {
     private final JLabel entityLabel;
     private final Runnable shutdownHook;
 
-    public GameWindow(SignalDispatcher dispatcher, Config config, Runnable shutdownHook) {
+    @AssistedInject
+    public GameWindow(SignalDispatcher dispatcher,
+                      ButtonContainer btnContainer,
+                      EntityDataContainer edContainer,
+                      @Assisted Runnable shutdownHook) {
         this.entityLabel = new JLabel();
         this.entityLabel.setFont(new Font("Tahoma", Font.BOLD, 20)); // Change the default font size
         this.entityLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -37,9 +44,9 @@ public class GameWindow extends JFrame implements WindowListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 1000);
         setLayout(new GridLayout(3,  1));
-        add(new ButtonContainer(dispatcher, config));
+        add(btnContainer);
         add(this.entityLabel);
-        add(new EntityDataContainer(dispatcher));
+        add(edContainer);
         setVisible(true);
         dispatcher.subscribe(EntityPlaysSignal.class, this::onEntityPlays);
     }
@@ -71,4 +78,10 @@ public class GameWindow extends JFrame implements WindowListener {
 
     @Override
     public void windowDeactivated(WindowEvent event) {}
+
+    @AssistedFactory
+    public interface Factory {
+
+        GameWindow create(Runnable shutdownHook);
+    }
 }

@@ -19,15 +19,15 @@ public class Bootstrap {
     private static final Logger LOGGER = LogUtil.getLogger(Bootstrap.class);
     private final Config config;
     private final Game game;
-    private final GameWindow window;
     private final CommandManager cmdManager;
+    private final GameWindow window;
 
     @Inject
-    public Bootstrap(Config config, Game game, GameWindow window, CommandManager cmdManager) {
+    public Bootstrap(Config config, Game game, CommandManager cmdManager, GameWindow.Factory windowFactory) {
         this.config = config;
         this.game = game;
-        this.window = window;
         this.cmdManager = cmdManager;
+        this.window = windowFactory.create(this::handleForceShutdown);
     }
 
     /**
