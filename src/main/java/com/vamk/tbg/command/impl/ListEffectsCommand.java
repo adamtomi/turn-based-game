@@ -36,7 +36,7 @@ public class ListEffectsCommand extends Command {
                         .stream()
                         .map(StatusEffect::name)
                         .collect(Collectors.joining(", "));
-                context.respond("Entity %d's acitve effects: %s".formatted(target.getId(), active));
+                context.respond("Entity %d's active effects: %s".formatted(target.getId(), active));
             }
         } else {
             String all = Arrays.stream(StatusEffect.values())
