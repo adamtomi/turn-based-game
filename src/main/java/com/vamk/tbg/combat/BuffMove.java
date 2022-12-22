@@ -7,6 +7,7 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import javax.inject.Inject;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ public class BuffMove extends AbstractBuffMove {
             StatusEffect.REGENERATION, StatusEffect.LIFESTEAL, StatusEffect.CAFFEINATED
     );
 
+    @Inject
     public BuffMove(Config config) {
         super("BUFF", false, config, Keys.BUFF_CHANCES, POTENTIAL_EFFECTS);
     }

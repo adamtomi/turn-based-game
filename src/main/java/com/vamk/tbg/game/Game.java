@@ -1,17 +1,10 @@
 package com.vamk.tbg.game;
 
-import com.vamk.tbg.combat.BuffMove;
-import com.vamk.tbg.combat.CureMove;
-import com.vamk.tbg.combat.DamageMove;
-import com.vamk.tbg.combat.DebuffMove;
-import com.vamk.tbg.combat.HealAllMove;
-import com.vamk.tbg.combat.HealMove;
 import com.vamk.tbg.combat.Move;
-import com.vamk.tbg.combat.SplashDamageMove;
 import com.vamk.tbg.config.Config;
 import com.vamk.tbg.config.Keys;
-import com.vamk.tbg.effect.BleedingEffectHandler;
-import com.vamk.tbg.effect.RegenEffectHandler;
+import com.vamk.tbg.di.qualifier.EffectHandlerSet;
+import com.vamk.tbg.di.qualifier.MoveSet;
 import com.vamk.tbg.effect.StatusEffect;
 import com.vamk.tbg.effect.StatusEffectHandler;
 import com.vamk.tbg.signal.SignalDispatcher;
@@ -41,33 +34,26 @@ import java.util.logging.Logger;
 @Singleton
 public class Game {
     private static final Logger LOGGER = LogUtil.getLogger(Game.class);
-    private final Map<String, Move> moves;
     private final SignalDispatcher dispatcher;
     private final Config config;
+    private final Map<String, Move> moves;
+    private final Set<StatusEffectHandler> effectHandlers;
     private final Entity.Factory entityFactory;
     private final List<Entity> entities;
-    private final Set<StatusEffectHandler> effectHandlers;
     private Cursor<Entity> cursor;
     private boolean importedState = false;
 
     @Inject
-    public Game(SignalDispatcher dispatcher, Config config) {
-        this.moves = CollectionUtil.mapOf(
-                Move::getId,
-                new BuffMove(config),
-                new CureMove(),
-                new DebuffMove(config),
-                new DamageMove(config),
-                new HealAllMove(config),
-                new HealMove(config),
-                new SplashDamageMove(config)
-        );
-
+    public Game(SignalDispatcher dispatcher,
+                Config config,
+                @MoveSet Set<Move> moves,
+                @EffectHandlerSet Set<StatusEffectHandler> effectHandlers) {
         this.dispatcher = dispatcher;
         this.config = config;
+        this.moves = CollectionUtil.mapOf(Move::getId, moves);
+        this.effectHandlers = effectHandlers;
         this.entityFactory = new Entity.Factory(dispatcher, this.moves);
         this.entities = new ArrayList<>();
-        this.effectHandlers = Set.of(new BleedingEffectHandler(config), new RegenEffectHandler(config));
     }
 
     /**

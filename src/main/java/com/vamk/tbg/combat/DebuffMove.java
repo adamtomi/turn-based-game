@@ -7,6 +7,7 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import javax.inject.Inject;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
@@ -21,6 +22,7 @@ public class DebuffMove extends AbstractBuffMove {
             StatusEffect.BLEEDING, StatusEffect.CONFUSED, StatusEffect.FROZEN
     );
 
+    @Inject
     public DebuffMove(Config config) {
         super("DEBUFF", true, config, Keys.DEBUFF_CHANCES, POTENTIAL_EFFECTS);
     }

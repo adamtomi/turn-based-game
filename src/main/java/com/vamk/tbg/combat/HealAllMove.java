@@ -6,6 +6,7 @@ import com.vamk.tbg.game.Entity;
 import com.vamk.tbg.game.MoveContext;
 import com.vamk.tbg.util.LogUtil;
 
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -18,6 +19,7 @@ public class HealAllMove extends AbstractMove {
     private static final Logger LOGGER = LogUtil.getLogger(HealAllMove.class);
     private final Config config;
 
+    @Inject
     public HealAllMove(Config config) {
         super("HEAL_ALL", false);
         this.config = config;
