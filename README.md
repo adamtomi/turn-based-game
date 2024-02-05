@@ -8,7 +8,7 @@ The Stick of Truth**.
 - UI doesn't matter (hence why it looks the way it does *(aka terrible)*)
 
 > ### TODO (I'll never get around to these anyway):
-- Switch to JavaFX
+- Switch to FXGL
 - Configurable logging
 - Better AI
 - Achievements
