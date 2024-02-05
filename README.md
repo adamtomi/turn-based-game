@@ -1,5 +1,5 @@
 ## Turn Based Game
-This game was the final project for the **IITB8003-3005 Object Oriented Programming** at Vaasa University of Applied Sciences. The game may (or may not) have been inspired by the combat system found in **South Park:
+This game was the final project for the **IITB8003-3005 Object Oriented Programming** course at Vaasa University of Applied Sciences. The game may (or may not) have been inspired by the combat system found in **South Park:
 The Stick of Truth**.
 
 > ### Requirements:
